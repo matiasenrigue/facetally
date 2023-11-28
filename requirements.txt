@@ -4,6 +4,8 @@ numpy
 pandas
 opencv-python
 pillow-heif
+python-dotenv
 requests
+streamlit
 tensorflow
 ultralytics
