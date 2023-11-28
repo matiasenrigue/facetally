@@ -6,3 +6,10 @@ pandas
 requests
 tensorflow
 ultralytics
+os
+tqdm.auto
+sklearn.model_selection
+matplotlib
+PIL
+cv2
+shutil
