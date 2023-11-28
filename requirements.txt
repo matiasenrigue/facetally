@@ -1,5 +1,9 @@
-ultralytics
+colorama
+keras-cv
 numpy
 pandas
-colorama
+opencv-python
 pillow-heif
+requests
+tensorflow
+ultralytics
