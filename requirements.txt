@@ -1,9 +1,10 @@
 colorama
 keras-cv
+matplotlib
 numpy
 pandas
-opencv-python
 pillow-heif
+opencv-python
 requests
 tensorflow
 ultralytics
