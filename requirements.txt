@@ -2,3 +2,4 @@ ultralytics
 numpy
 pandas
 colorama
+pillow-heif
