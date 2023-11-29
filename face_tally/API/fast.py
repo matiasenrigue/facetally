@@ -1,49 +1,46 @@
-from face_tally.ml_logic.bound_boxes import getting_bounding_boxes, create_image
-
-# Luego hay que display la imagen nueva
+from face_tally.ml_logic.image_prediction import predict_bounding_boxes
 from ultralytics import YOLO
-import numpy as np
 from PIL import Image
+
 from pillow_heif import register_heif_opener
-import requests
-from io import BytesIO
-import cv2
-import datetime
-import matplotlib.pyplot as plt
-
 from fastapi import FastAPI, UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import Response
+
+from io import BytesIO
 
 
+"""
+This script receives an API call:
+- a picture in Bytes format
+
+And outputs a prediction made with the Model, in the form of bounding boxes
+"""
 
 
 app = FastAPI()
+app.state.model = YOLO("yolov8n.pt")
 
-# Allow all requests (optional, good for development purposes)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
 
-@app.get("/")
-def index():
+# This is given to the code to give Python the ability to read iPhone pictures
+register_heif_opener()
+
+
+@app.get("/ok")
+def read_root():
     return {"status": "ok"}
 
 
-
-
-@app.post('/upload_image')
-async def receive_image(img: UploadFile=File(...)):
-    ### Receiving and decoding the image
-    model = YOLO("yolov8n.pt")
-    register_heif_opener()
+@app.post("/upload_image")
+async def receive_image(img: UploadFile = File(...)):
+    # Receive the image from Streamlit
     contents = await img.read()
 
-    image = Image.open(contents)
-    boundsboxes = getting_bounding_boxes(image, model)
+    # Open the image from Bytes format
+    image = Image.open(BytesIO(contents))
 
-    return dict(boundsboxes)
+    model = app.state.model
+
+    # Process the image using the YOLO model
+    boundsboxes = predict_bounding_boxes(image, model)
+
+    # Convert boundsboxes to a JSON-serializable format
+    return {"boundsboxes": boundsboxes}
