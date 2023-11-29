@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 
 from colorama import Fore, Style
+from face_tally.ml_logic.data import *
+from face_tally.ml_logic.preprocessing import *
+from face_tally.ml_logic.train import *
 
 
 def preprocess():
@@ -12,10 +15,23 @@ def preprocess():
     - Store processed data on your personal BQ (truncate existing table if it exists)
     - No need to cache processed data as CSV (it will be cached when queried back from BQ during training)
     """
-    pass
+
+    # Comment 1: PENDING
+
+    df = load_annotations_csv()
+
+    df = normalize_data(df)
+
+    df = aggregate_boxes(df)
+
+    data = add_image_path_to_bbox(df)
+
+    data = load_dataset(data)
+
+    return data
 
 
-def train():
+def train(data):
     """
     - Retrieve data from BigQuery, or from `cache_path` if the file exists
     - Store at `cache_path` if retrieved from BigQuery for future use
@@ -24,7 +40,11 @@ def train():
 
     Return loss as a float
     """
-    pass
+
+    # Comment: PENDING
+    train_ds, val_ds, test_data = splitting_data(data)
+    train = dict_to_tuple(data)
+    fit_model()
 
 
 def evaluate():
@@ -43,8 +63,8 @@ def pred():
 
 
 if __name__ == "__main__":
-    # preprocess()
-    # train()
+    data = preprocess()
+    train(data)
     # evaluate()
     # pred()
     pass
