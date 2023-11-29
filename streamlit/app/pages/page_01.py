@@ -14,7 +14,7 @@ st.set_page_config(
 
 load_dotenv()
 url = os.getenv("FACETALLY_API_URL")
-st.text(f"the url is: {url}")
+st.text(f"the API url is: {url}")
 
 # App title and description
 st.header("Simple Image Uploader ")
