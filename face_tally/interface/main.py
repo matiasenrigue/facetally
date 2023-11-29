@@ -3,7 +3,6 @@ import pandas as pd
 
 from colorama import Fore, Style
 
-
 def preprocess():
     """
     - Query the raw dataset from TO BE DETERMINED
