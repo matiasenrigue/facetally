@@ -6,7 +6,6 @@ from face_tally.ml_logic.data import *
 from face_tally.ml_logic.preprocessing import *
 from face_tally.ml_logic.train import *
 
-
 def preprocess():
     """
     - Query the raw dataset from TO BE DETERMINED
