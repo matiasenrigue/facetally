@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from PIL import Image
 import os
-from web_streamlit.params import *
+# from web_streamlit.params import *
 
 from face_tally.ml_logic.bound_boxes import getting_bounding_boxes, create_image
 
