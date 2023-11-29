@@ -5,7 +5,6 @@ numpy
 pandas
 opencv-python
 Pillow
-python-dotenv
 requests
 streamlit
 tensorflow
