@@ -1,5 +1,6 @@
 colorama
 keras-cv
+matplotlib
 numpy
 pandas
 opencv-python
