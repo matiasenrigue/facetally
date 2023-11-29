@@ -3,8 +3,10 @@ keras-cv
 matplotlib
 numpy
 pandas
-pillow-heif
 opencv-python
+Pillow
+pillow-heif
 requests
+streamlit
 tensorflow
 ultralytics
