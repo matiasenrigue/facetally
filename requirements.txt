@@ -1,4 +1,5 @@
 colorama
+google-cloud-storage
 keras-cv
 matplotlib
 numpy
