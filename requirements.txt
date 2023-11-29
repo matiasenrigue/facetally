@@ -5,6 +5,7 @@ numpy
 pandas
 opencv-python
 Pillow
+pillow-heif
 requests
 streamlit
 tensorflow
