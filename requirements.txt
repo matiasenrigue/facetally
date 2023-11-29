@@ -3,7 +3,7 @@ keras-cv
 numpy
 pandas
 opencv-python
-pillow-heif
+Pillow
 python-dotenv
 requests
 streamlit
