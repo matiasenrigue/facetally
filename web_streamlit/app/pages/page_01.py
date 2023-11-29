@@ -1,8 +1,8 @@
 import streamlit as st
 import requests
 from PIL import Image
-from dotenv import load_dotenv
 import os
+from web_streamlit.params import *
 
 # Set page tab display
 st.set_page_config(
@@ -12,8 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-load_dotenv()
-url = os.getenv("FACETALLY_API_URL")
+url = FACETALLY_API_URL
 st.text(f"the API url is: {url}")
 
 # App title and description
