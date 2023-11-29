@@ -4,6 +4,22 @@ from PIL import Image
 import os
 from web_streamlit.params import *
 
+from face_tally.ml_logic.bound_boxes import getting_bounding_boxes, create_image
+
+# Luego hay que display la imagen nueva
+from ultralytics import YOLO
+import numpy as np
+from PIL import Image
+from pillow_heif import register_heif_opener
+import requests
+from io import BytesIO
+import cv2
+import datetime
+import matplotlib.pyplot as plt
+
+
+
+
 # Set page tab display
 st.set_page_config(
     page_title="Simple Image Uploader",
@@ -29,13 +45,25 @@ st.markdown("---")
 ### Create a native Streamlit file upload input
 img_file_buffer = st.file_uploader("Upload an image")
 
+
+
 if img_file_buffer is not None:
     col1, col2 = st.columns(2)
+    model = YOLO("yolov8n.pt")
+    register_heif_opener()
+    image = Image.open(img_file_buffer)
+
+    boundsboxes = getting_bounding_boxes(image, model)
+
+    array_original_image = np.array(image)
+
+    created_image = create_image(array_original_image, boundsboxes)
 
     with col1:
         ### Display the image user uploaded
+        st.markdown("Here are the faces in the image you uploaded👇")
         st.image(
-            Image.open(img_file_buffer), caption="Here's the image you uploaded ☝️"
+            Image.fromarray(created_image), caption="You can now save your image"
         )
 
     # with col2:

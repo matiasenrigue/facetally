@@ -9,7 +9,6 @@ import datetime
 import matplotlib.pyplot as plt
 
 
-
 """
 DISCLAIMER!!! PATHS ARE WRONG!!!
 Hay que cambiar paths a:
@@ -17,17 +16,9 @@ input: lo que recibe el código desde streamlit
 output: streamlit
 """
 
-model = YOLO("yolov8n.pt")
-image_file_path = "trial_images/IMG_4194.HEIC"
-
-register_heif_opener() # In case if its an iphone picture
-
-image = Image.open(image_file_path)
-array_image = np.array(image)
 
 
-
-def getting_bounding_boxes(image):
+def getting_bounding_boxes(image, model):
 
     results = model.predict(image)
 
@@ -103,11 +94,11 @@ def save_image(image_created, file_save_name=None):
 
 
 
-def full_process(original_image, saving_name=None):
+def full_process(original_image, model, saving_name=None):
 
     array_original_image = np.array(original_image)
 
-    bbs = getting_bounding_boxes(original_image)
+    bbs = getting_bounding_boxes(model, original_image)
     created_image = create_image(array_original_image, bbs)
 
     save_image(created_image, saving_name)
@@ -116,4 +107,13 @@ def full_process(original_image, saving_name=None):
 
 
 if __name__ == '__main__':
-    full_process(image, "prueba_now")
+
+    model = YOLO("yolov8n.pt")
+    image_file_path = "trial_images/IMG_4194.HEIC"
+
+    register_heif_opener() # In case if its an iphone picture
+
+    image = Image.open(image_file_path)
+    array_image = np.array(image)
+
+    full_process(image, model, "prueba_now")
