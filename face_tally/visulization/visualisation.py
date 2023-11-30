@@ -1,5 +1,9 @@
 from keras_cv import bounding_box
 from keras_cv import visualization
+from face_tally.params import *
+from face_tally.interface.main import preprocess, train
+from face_tally.ml_logic.train import splitting_data
+import matplotlib.pyplot as plt
 
 
 def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
@@ -7,9 +11,9 @@ def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
     This function is meant to visualise our preprocessed training data
     """
     inputs = next(iter(inputs.take(1)))
-    class_mapping = {0: "face"}
+
     images, bounding_boxes = inputs["images"], inputs["bounding_boxes"]
-    visualization.plot_bounding_box_gallery(
+    figure = visualization.plot_bounding_box_gallery(
         images,
         value_range=value_range,
         rows=rows,
@@ -24,13 +28,19 @@ def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
 
 # NOTES: TO USE FIRST FUNCTION AND VISUALISE DATASET
 
-# visualize_dataset(
-#     train_ds, bounding_box_format="rel_xyxy", value_range=(0, 255), rows=2, cols=2
-# )
 
-# visualize_dataset(
-#     val_ds, bounding_box_format="rel_xyxy", value_range=(0, 255), rows=2, cols=2
-# )
+def test_preprocessing():
+    dataset = preprocess()
+
+    train_ds, val_ds, test_data = splitting_data(dataset)
+
+    visualize_dataset(
+        train_ds, bounding_box_format=BOX_FORMAT, value_range=(0, 255), rows=2, cols=2
+    )
+
+
+#####################################################################################################
+#####################################################################################################
 
 
 def visualize_detections(model, dataset, bounding_box_format):
@@ -41,7 +51,7 @@ def visualize_detections(model, dataset, bounding_box_format):
     y_pred = model.predict(images)
     y_pred = bounding_box.to_ragged(y_pred)
     class_mapping = {0: "face"}
-    visualization.plot_bounding_box_gallery(
+    figure = visualization.plot_bounding_box_gallery(
         images,
         value_range=(0, 255),
         bounding_box_format=bounding_box_format,
@@ -58,4 +68,15 @@ def visualize_detections(model, dataset, bounding_box_format):
 
 # NOTES: TO USE SECOND FUNCTION
 
-# visualize_detections(yolo, dataset=val_ds, bounding_box_format="rel_xyxy")
+
+def test_training():
+    dataset = preprocess()
+    train_ds, val_ds, test_data = splitting_data(dataset)
+    yolo = train(dataset)
+
+    visualize_detections(yolo, dataset=val_ds, bounding_box_format=BOX_FORMAT)
+
+
+if __name__ == "__main__":
+    test_preprocessing()
+    test_training()

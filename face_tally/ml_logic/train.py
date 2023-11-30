@@ -55,6 +55,9 @@ def splitting_data(data: tf.data.Dataset):
     val_data = data.skip(train_idx).take(validation_idx)
     test_data = data.skip(train_idx + validation_idx)
 
+    # Just for test
+    train_data = train_data.take(4)
+
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
     train_ds = train_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
@@ -98,7 +101,8 @@ def fit_model(train_ds, val_ds):
     Fitting model on train_ds, using val_ds as validation data
     """
     yolo = get_yolo()
+    yolo_compile = get_compile(yolo)
     train_ds = dict_to_tuple_train(train_ds)
     val_ds = dict_to_tuple_val(val_ds)
-    history = yolo.fit(train_ds, validation_data=val_ds, epochs=1, verbose=1)
+    history = yolo_compile.fit(train_ds, validation_data=val_ds, epochs=1, verbose=1)
     return history

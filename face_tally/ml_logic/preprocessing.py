@@ -36,7 +36,7 @@ def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
     return grouped
 
 
-def add_image_path_to_bbox(df: pd.DataFrame) -> tf.data.Dataset:
+def create_dataset(df: pd.DataFrame) -> tf.data.Dataset:
     """
     This function takes the grouped dataframe created with the normalize_data function,
     And then creates a Tensorflow dataset
@@ -44,8 +44,8 @@ def add_image_path_to_bbox(df: pd.DataFrame) -> tf.data.Dataset:
     """
     image_paths = []
     bboxes = []
-    project_root = os.path.dirname(os.getcwd())
-    test_image_folder = os.path.join(project_root, "raw_data", "image_data")
+
+    test_image_folder = os.path.join(LOCAL_DATA_PATH, "image_data")
     # Iterate through the grouped dataframe and populate the lists with image paths and bounding boxes.
     for _, row in df.iterrows():
         image_path = os.path.join(test_image_folder, row["Name"])
@@ -78,4 +78,4 @@ def load_dataset(image_path: str, bbox: tf.Variable, classes: tf.Variable) -> di
     # Create a dictionary for bounding boxes with 'boxes' and 'classes' as keys
     bounding_boxes = {"boxes": bbox, "classes": classes}
     # Return a dictionary with 'images' and 'bounding_boxes'
-    return {"images": image, "bounding_boxes": bounding_boxes}
+    return {"images": tf.cast(image, tf.float32), "bounding_boxes": bounding_boxes}

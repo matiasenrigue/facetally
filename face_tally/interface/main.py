@@ -10,24 +10,15 @@ def preprocess():
     - Download images locally
     - Process data
     """
-
     print("Starting preprocessing")
 
     df = load_annotations_csv()
 
-    df = normalize_data(df)
+    df_normalized = normalize_data(df)
 
-    print("Data has been normalized")
+    dataset = create_dataset(df_normalized)
 
-    df = aggregate_boxes(df)
-
-    data = add_image_path_to_bbox(df)
-
-    data = load_dataset(data)
-
-    print("Data has been normalized and processed")
-
-    return data
+    return dataset
 
 
 def train(data):
@@ -36,6 +27,7 @@ def train(data):
     - Store training results and model weights
     - Return loss as a float
     """
+    breakpoint()
 
     print("Starting training")
 
@@ -64,7 +56,8 @@ def pred():
 
 
 if __name__ == "__main__":
-    data = preprocess()
-    history = train(data)
+    dataset = preprocess()
+    train_ds, val_ds, test_data = splitting_data(dataset)
+    history = train(dataset)
     # evaluate()
     # pred()
