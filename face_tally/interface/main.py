@@ -9,11 +9,9 @@ from face_tally.ml_logic.train import *
 
 def preprocess():
     """
-    - Query the raw dataset from TO BE DETERMINED
-    - Cache query result as a local CSV if it doesn't exist locally
-    - Process query data
-    - Store processed data on your personal BQ (truncate existing table if it exists)
-    - No need to cache processed data as CSV (it will be cached when queried back from BQ during training)
+    - Query the raw dataset from Google CloudStorage
+    - Download images locally
+    - Process data
     """
 
     # Comment 1: PENDING
@@ -33,22 +31,15 @@ def preprocess():
 
 def train(data):
     """
-    - Retrieve data from BigQuery, or from `cache_path` if the file exists
-    - Store at `cache_path` if retrieved from BigQuery for future use
     - Train on the preprocessed dataset
     - Store training results and model weights
-
-    Return loss as a float
+    - Return loss as a float
     """
 
     # Comment: PENDING
     train_ds, val_ds, test_data = splitting_data(data)
 
-    train_ds = dict_to_tuple_train(train_ds)
-
-    val_ds = dict_to_tuple_val(val_ds)
-
-    fitted_model = fit_model(train_ds)
+    fitted_model = fit_model(train_ds, val_ds)
 
     return train_ds, val_ds, test_data, fitted_model
 

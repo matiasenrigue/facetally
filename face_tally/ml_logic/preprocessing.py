@@ -3,14 +3,12 @@ import pandas as pd
 import tensorflow as tf
 import os
 
-"""
-SCRIP DOCU PENDING
-"""
-
 
 def aggregate_boxes(data):
     """
-    This function does....
+    This function takes the annotations dataframe,
+    extracts the relevant columns,
+    and converts them to lists
     """
     boxes = data[["LEFT", "TOP", "RIGHT", "BOTTOM"]].values.tolist()
     return boxes
@@ -18,7 +16,9 @@ def aggregate_boxes(data):
 
 def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
     """
-    DOCUMENTATION PENDING
+    This function normalises the data for our bbox coordinates,
+    and returns a new DataFrame with the normalized bbox info,
+    grouped by the "Name" column (= our images)
     """
     df["LEFT"] = df["xmin"] / df["width"]
     df["TOP"] = df["ymin"] / df["height"]
@@ -38,8 +38,9 @@ def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def add_image_path_to_bbox(df: pd.DataFrame) -> tf.data.Dataset:
     """
-    The dataframe we are inputting is the grouped dataframe created with normalize_data function
-    OUTPUT DOUC PENDING
+    This function takes the grouped dataframe created with the normalize_data function,
+    And then creates a Tensorflow dataset
+    (including image paths, bounding boxes, and class labels for each image)
     """
     image_paths = []
     bboxes = []
@@ -67,7 +68,10 @@ def add_image_path_to_bbox(df: pd.DataFrame) -> tf.data.Dataset:
 
 def load_dataset(image_path: str, bbox: tf.Variable, classes: tf.Variable) -> dict:
     """
-    Function to create the data dictionary required by KerasCV without resizing the image
+    This function takes an image path, bbox, and class labels,
+    and returns a dictionary with image and bbox info
+    (which conforms to format required by KerasCV)
+    without resizing the image
     """
     # Load the image
     image = load_image(image_path)

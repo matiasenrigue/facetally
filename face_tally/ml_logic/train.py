@@ -9,7 +9,7 @@ from ultralytics import YOLO
 
 def get_augmenter(bbox_format="rel_xyxy"):
     """
-    DOCUMENTATION PENDING
+    Function to define our augmenter, will be applied on train_ds
     """
     augmenter = keras.Sequential(
         layers=[
@@ -29,7 +29,7 @@ def get_augmenter(bbox_format="rel_xyxy"):
 
 def get_resizer(bbox_format="rel_xyxy"):
     """
-    DOCUMENTATION PENDING
+    Function to define our resizer, will be applied on val_ds
     """
     resizing = layers.JitteredResize(
         target_size=(640, 640),
@@ -41,7 +41,8 @@ def get_resizer(bbox_format="rel_xyxy"):
 
 def splitting_data(data):
     """
-    DOCU
+    Function to split the data into train, validation, and test datasets (80%, 15%, 5%)
+    Applies augmenter to train_ds and resizer to validation_ds
     """
     augmenter = get_augmenter()
     resizing = get_resizer()
@@ -70,15 +71,14 @@ def splitting_data(data):
 
 def dict_to_tuple(inputs):
     """
-    DOCUMENTATION PENDING
+    Defines the class ids and mapping (in this case, we only have one class "face")
     """
-    # Define the class ids and mapping. In this case, we have only one class 'face'.
     return inputs["images"], inputs["bounding_boxes"]
 
 
 def dict_to_tuple_train(train_ds):
     """
-    DOCUMENTATION PENDING
+    Applying dict_to_tuple function on train_ds
     """
     train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
@@ -87,21 +87,22 @@ def dict_to_tuple_train(train_ds):
 
 def dict_to_tuple_val(val_ds):
     """
-    DOCUMENTATION PENDING
+    Applying dict_to_tuple function on val_ds
     """
     val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
     return val_ds
 
 
-def fit_model():
+def fit_model(train_ds, val_ds):
     """
-    DOCUMENTATION PENDING
+    Fitting model on train_ds, using val_ds as validation data
     """
     yolo = get_yolo()
     train_ds = dict_to_tuple_train(train_ds)
     val_ds = dict_to_tuple_val(val_ds)
-    return yolo.fit(train_ds, validation_data=val_ds, epochs=1)
+    history = yolo.fit(train_ds, validation_data=val_ds, epochs=1, verbose=1)
+    return history
 
 
 # def train_model():

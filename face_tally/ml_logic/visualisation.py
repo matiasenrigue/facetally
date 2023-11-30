@@ -4,7 +4,7 @@ from keras_cv import visualization
 
 def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
     """
-    DOCUMENTATION PENDING
+    This function is meant to visualise our preprocessed training data
     """
     inputs = next(iter(inputs.take(1)))
     class_mapping = {0: "face"}
@@ -35,7 +35,7 @@ def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
 
 def visualize_detections(model, dataset, bounding_box_format):
     """
-    DOCUMENTATION PENDING
+    This function is meant to visualise our predictions
     """
     images, y_true = next(iter(dataset.take(1)))
     y_pred = model.predict(images)
