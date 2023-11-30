@@ -61,3 +61,31 @@ def download_images_from_GCP(
             print(f"Downloaded '{obj.name}' to '{local_file_path}'.  Count: {count}")
 
     return True if count > 0 else False
+
+
+def update_local_raw_data_from_GCP():
+    """
+    Updates the local raw data with the data in Google Cloud Storage
+    """
+
+    print("Updating local raw data from Google Cloud Storage...")
+
+    # Project path
+    project_root = os.path.dirname(os.getcwd())
+
+    # Lirectories path
+    local_image_folder = os.path.join(project_root, "raw_data", "image_data")
+    local_annot_folder = os.path.join(project_root, "raw_data")
+
+    # Bucket paths
+    bucket_image_folder = "image_data/"  # Destination folder in the bucket
+    csv_name = "bbox_train.csv"
+
+    changes_csv = download_images_from_GCP(BUCKET_NAME, csv_name, local_annot_folder)
+    changes_images = download_images_from_GCP(
+        BUCKET_NAME, bucket_image_folder, local_image_folder
+    )
+    if not (changes_csv or changes_images):
+        print("Process finished, local files were already up to date")
+    else:
+        print("Process finished, local raw data folder is up to date")
