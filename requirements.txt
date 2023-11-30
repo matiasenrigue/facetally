@@ -1,4 +1,5 @@
 colorama
+google-cloud-storage
 DateTime
 keras-cv
 fastapi

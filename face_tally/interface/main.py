@@ -56,6 +56,8 @@ def pred():
 
 
 if __name__ == "__main__":
+    # Updates the local raw data with the data in Google Cloud Storage
+    update_local_raw_data_from_GCP()
     dataset = preprocess()
     train_ds, val_ds, test_data = splitting_data(dataset)
     yolo, history = train(dataset)
