@@ -1,5 +1,4 @@
 Pillow
 pillow-heif
-streamlit
 PIL
 numpy
