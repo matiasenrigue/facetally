@@ -1,0 +1,16 @@
+colorama
+keras-cv
+fastapi
+matplotlib
+numpy
+pandas
+opencv-python
+Pillow
+pillow-heif
+python-multipart
+requests
+starlette
+streamlit
+ultralytics
+uvicorn
+tensorflow
