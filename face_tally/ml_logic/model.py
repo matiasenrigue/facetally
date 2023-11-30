@@ -26,15 +26,15 @@ def get_yolo(bbox_format="rel_xyxy"):
     return yolo
 
 
-def compile():
+def get_compile(model):
     """
     Compile the model with binary_crossentropy and Complete IoU (CIoU) metric.
     """
-    yolo = get_yolo()
     optimizer = tf.keras.optimizers.Adam(
         learning_rate=LEARNING_RATE,
         global_clipnorm=GLOBAL_CLIPNORM,
     )
-    return yolo.compile(
+    model.compile(
         optimizer=optimizer, classification_loss="binary_crossentropy", box_loss="ciou"
     )
+    return model

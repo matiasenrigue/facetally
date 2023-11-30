@@ -1,7 +1,7 @@
 from keras_cv import bounding_box
 from keras_cv import visualization
 from face_tally.params import *
-from face_tally.interface.main import preprocess
+from face_tally.interface.main import preprocess, train
 from face_tally.ml_logic.train import splitting_data
 import matplotlib.pyplot as plt
 
@@ -39,6 +39,10 @@ def test_preprocessing():
     )
 
 
+#####################################################################################################
+#####################################################################################################
+
+
 def visualize_detections(model, dataset, bounding_box_format):
     """
     This function is meant to visualise our predictions
@@ -64,6 +68,15 @@ def visualize_detections(model, dataset, bounding_box_format):
 
 # NOTES: TO USE SECOND FUNCTION
 
-# visualize_detections(yolo, dataset=val_ds, bounding_box_format="rel_xyxy")
+
+def test_training():
+    dataset = preprocess()
+    train_ds, val_ds, test_data = splitting_data(dataset)
+    yolo = train(dataset)
+
+    visualize_detections(yolo, dataset=val_ds, bounding_box_format=BOX_FORMAT)
+
+
 if __name__ == "__main__":
     test_preprocessing()
+    test_training()

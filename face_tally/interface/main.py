@@ -27,6 +27,8 @@ def train(data):
     - Store training results and model weights
     - Return loss as a float
     """
+    breakpoint()
+
     print("Starting training")
 
     train_ds, val_ds, test_data = splitting_data(data)
