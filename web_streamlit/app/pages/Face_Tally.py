@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from PIL import Image
 import numpy as np
-from face_tally.ml_logic.image_prediction import create_image
+from app.image_prediction import create_image
 from pillow_heif import register_heif_opener
 
 
@@ -22,33 +22,33 @@ st.set_page_config(
 
 
 # Custom color theme
-primary_color = "#F63366"
-background_color = "#FFFFFF"
-secondary_background_color = "#F0F2F6"
-text_color = "#262730"
-font = "sans serif"
+# primary_color = "#F63366"
+# background_color = "#FFFFFF"
+# secondary_background_color = "#F0F2F6"
+# text_color = "#262730"
+# font = "sans serif"
 
 # Apply the color theme
-css = f"""
-    <style>
-        body {{
-            color: {text_color};
-            background-color: {background_color};
-            font-family: {font};
-        }}
-        .stApp {{
-            background-color: {secondary_background_color};
-        }}
-        .stTextInput, .stTextArea, .stSelectbox, .stSlider, .stNumberInput, .stCheckbox {{
-            background-color: {secondary_background_color};
-        }}
-        .stButton, .stFileUploader, .stDownloadButton, .stDeckGlJson {{
-            background-color: {primary_color};
-            color: {background_color};
-        }}
-    </style>
-"""
-st.markdown(css, unsafe_allow_html=True)
+# css = f"""
+#     <style>
+#         body {{
+#             color: {text_color};
+#             background-color: {background_color};
+#             font-family: {font};
+#         }}
+#         .stApp {{
+#             background-color: {secondary_background_color};
+#         }}
+#         .stTextInput, .stTextArea, .stSelectbox, .stSlider, .stNumberInput, .stCheckbox {{
+#             background-color: {secondary_background_color};
+#         }}
+#         .stButton, .stFileUploader, .stDownloadButton, .stDeckGlJson {{
+#             background-color: {primary_color};
+#             color: {background_color};
+#         }}
+#     </style>
+# """
+# st.markdown(css, unsafe_allow_html=True)
 
 # Large, stylized title
 st.title("Let's go live! 📸")
