@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from PIL import Image
 import numpy as np
-from app.image_prediction import create_image
+from image_prediction import create_image
 from pillow_heif import register_heif_opener
 
 
