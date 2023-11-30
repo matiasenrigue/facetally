@@ -14,19 +14,13 @@ def preprocess():
     - Process data
     """
 
-    # Comment 1: PENDING
-
     df = load_annotations_csv()
 
-    df = normalize_data(df)
+    df_normalized = normalize_data(df)
 
-    df = aggregate_boxes(df)
+    dataset = create_dataset(df_normalized)
 
-    data = add_image_path_to_bbox(df)
-
-    data = load_dataset(data)
-
-    return data
+    return dataset
 
 
 def train(data):
@@ -60,8 +54,8 @@ def pred():
 
 
 if __name__ == "__main__":
-    data = preprocess()
-    train(data)
+    dataset = preprocess()
+    train_ds, val_ds, test_data = splitting_data(dataset)
     # evaluate()
     # pred()
     pass
