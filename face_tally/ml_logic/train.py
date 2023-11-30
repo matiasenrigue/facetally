@@ -3,8 +3,7 @@ from face_tally.ml_logic.preprocessing import load_dataset
 from face_tally.ml_logic.model import *
 import tensorflow as tf
 from tensorflow import keras
-from keras_cv import bounding_box, visualization, layers, models
-from ultralytics import YOLO
+from keras_cv import layers
 
 
 def get_augmenter(bbox_format="rel_xyxy"):
@@ -34,12 +33,12 @@ def get_resizer(bbox_format="rel_xyxy"):
     resizing = layers.JitteredResize(
         target_size=(640, 640),
         scale_factor=(0.75, 1.3),
-        bounding_box_format="rel_xyxy",
+        bounding_box_format=bbox_format,
     )
     return resizing
 
 
-def splitting_data(data):
+def splitting_data(data: tf.data.Dataset):
     """
     Function to split the data into train, validation, and test datasets (80%, 15%, 5%)
     Applies augmenter to train_ds and resizer to validation_ds
@@ -103,18 +102,3 @@ def fit_model(train_ds, val_ds):
     val_ds = dict_to_tuple_val(val_ds)
     history = yolo.fit(train_ds, validation_data=val_ds, epochs=1, verbose=1)
     return history
-
-
-# def train_model():
-#     # Load the pre-trained model
-#     model = YOLO("yolov8s-p2.yaml").load("yolov8s.pt")
-
-#     # Train the model
-#     model.train(
-#         data="dataset.yaml", epochs=200,  imgsz=256, save=True, format='onnx'
-#     )  # Set imgsz to 256 for training on 256x256 images
-
-#     # Export the model to ONNX format
-#     path = model.export()
-
-#     return path

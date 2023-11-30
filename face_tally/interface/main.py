@@ -1,6 +1,3 @@
-import numpy as np
-import pandas as pd
-
 from colorama import Fore, Style
 from face_tally.ml_logic.data import *
 from face_tally.ml_logic.preprocessing import *
@@ -14,17 +11,21 @@ def preprocess():
     - Process data
     """
 
-    # Comment 1: PENDING
+    print("Starting preprocessing")
 
     df = load_annotations_csv()
 
     df = normalize_data(df)
+
+    print("Data has been normalized")
 
     df = aggregate_boxes(df)
 
     data = add_image_path_to_bbox(df)
 
     data = load_dataset(data)
+
+    print("Data has been normalized and processed")
 
     return data
 
@@ -36,12 +37,15 @@ def train(data):
     - Return loss as a float
     """
 
-    # Comment: PENDING
+    print("Starting training")
+
     train_ds, val_ds, test_data = splitting_data(data)
 
-    fitted_model = fit_model(train_ds, val_ds)
+    history = fit_model(train_ds, val_ds)
 
-    return train_ds, val_ds, test_data, fitted_model
+    print("Training done")
+
+    return history
 
 
 def evaluate():
@@ -61,7 +65,6 @@ def pred():
 
 if __name__ == "__main__":
     data = preprocess()
-    train(data)
+    history = train(data)
     # evaluate()
     # pred()
-    pass
