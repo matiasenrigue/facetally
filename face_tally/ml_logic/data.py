@@ -9,7 +9,6 @@ def load_annotations_csv():
     """
     This function is to load the annotations of the bboxes (see in preprocessing)
     """
-
     path_annot = os.path.join(LOCAL_DATA_PATH, "bbox_train.csv")
 
     df = pd.read_csv(path_annot)

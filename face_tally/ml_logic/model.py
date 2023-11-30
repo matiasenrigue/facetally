@@ -1,8 +1,5 @@
-from ultralytics import YOLO
 import tensorflow as tf
-import keras
-from tensorflow import keras
-from keras_cv import bounding_box, visualization, layers, models
+from keras_cv import models
 from face_tally.params import *
 
 

@@ -1,6 +1,3 @@
-import numpy as np
-import pandas as pd
-
 from colorama import Fore, Style
 from face_tally.ml_logic.data import *
 from face_tally.ml_logic.preprocessing import *
@@ -13,6 +10,7 @@ def preprocess():
     - Download images locally
     - Process data
     """
+    print("Starting preprocessing")
 
     df = load_annotations_csv()
 
@@ -29,13 +27,15 @@ def train(data):
     - Store training results and model weights
     - Return loss as a float
     """
+    print("Starting training")
 
-    # Comment: PENDING
     train_ds, val_ds, test_data = splitting_data(data)
 
-    fitted_model = fit_model(train_ds, val_ds)
+    history = fit_model(train_ds, val_ds)
 
-    return train_ds, val_ds, test_data, fitted_model
+    print("Training done")
+
+    return history
 
 
 def evaluate():
@@ -56,6 +56,6 @@ def pred():
 if __name__ == "__main__":
     dataset = preprocess()
     train_ds, val_ds, test_data = splitting_data(dataset)
+    history = train(dataset)
     # evaluate()
     # pred()
-    pass
