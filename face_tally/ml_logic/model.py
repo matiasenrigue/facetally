@@ -16,7 +16,7 @@ def get_backbone():
 
 def get_yolo(bbox_format="rel_xyxy"):
     """
-    DOCUMENTATION PENDING
+    Define YOLO model with face class and COCO backbone
     """
     class_mapping = {0: "face"}
     backbone = get_backbone()
@@ -31,7 +31,7 @@ def get_yolo(bbox_format="rel_xyxy"):
 
 def compile():
     """
-    DOCUMENTATION PENDING
+    Compile the model with binary_crossentropy and Complete IoU (CIoU) metric.
     """
     yolo = get_yolo()
     optimizer = tf.keras.optimizers.Adam(

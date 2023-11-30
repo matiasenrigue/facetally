@@ -99,8 +99,8 @@ def fit_model():
     DOCUMENTATION PENDING
     """
     yolo = get_yolo()
-    train_ds = dict_to_tuple_train()
-    val_ds = dict_to_tuple_val()
+    train_ds = dict_to_tuple_train(train_ds)
+    val_ds = dict_to_tuple_val(val_ds)
     return yolo.fit(train_ds, validation_data=val_ds, epochs=1)
 
 

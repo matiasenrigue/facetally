@@ -16,6 +16,9 @@ import keras_cv
 import shutil
 
 def load_annotations_csv():
+    '''
+    This function is to load the annotations of the bboxes (see in preprocessing)
+    '''
     project_root = os.path.dirname(os.getcwd())
 
     path_annot = os.path.join(project_root, 'raw_data', 'bbox_train.csv')
@@ -25,7 +28,7 @@ def load_annotations_csv():
 
 def load_image(image_path: str) -> tf.Variable:
     '''
-    Function to load images without resizing, resize later
+    This function is to load images without resizing, resize later
     '''
     # Read the image file and decode it to a tensor
     image = tf.io.read_file(image_path)

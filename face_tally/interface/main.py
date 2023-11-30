@@ -6,6 +6,7 @@ from face_tally.ml_logic.data import *
 from face_tally.ml_logic.preprocessing import *
 from face_tally.ml_logic.train import *
 
+
 def preprocess():
     """
     - Query the raw dataset from TO BE DETERMINED
@@ -42,8 +43,14 @@ def train(data):
 
     # Comment: PENDING
     train_ds, val_ds, test_data = splitting_data(data)
-    train = dict_to_tuple(data)
-    fit_model()
+
+    train_ds = dict_to_tuple_train(train_ds)
+
+    val_ds = dict_to_tuple_val(val_ds)
+
+    fitted_model = fit_model(train_ds)
+
+    return train_ds, val_ds, test_data, fitted_model
 
 
 def evaluate():
