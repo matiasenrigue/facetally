@@ -1,5 +1,3 @@
-install:
-	@pip install -e .
 create_folders:
 	@mkdir ~/.lewagon/facetally_data
 	@mkdir ~/.lewagon/facetally_data/image_data
