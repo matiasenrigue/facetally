@@ -1,7 +1,6 @@
 from ultralytics import YOLO
 import numpy as np
 import datetime
-
 from PIL import Image
 from pillow_heif import register_heif_opener
 import cv2

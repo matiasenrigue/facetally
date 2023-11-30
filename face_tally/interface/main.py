@@ -1,29 +1,51 @@
-import numpy as np
-import pandas as pd
-
 from colorama import Fore, Style
+from face_tally.ml_logic.data import *
+from face_tally.ml_logic.preprocessing import *
+from face_tally.ml_logic.train import *
+
 
 def preprocess():
     """
-    - Query the raw dataset from TO BE DETERMINED
-    - Cache query result as a local CSV if it doesn't exist locally
-    - Process query data
-    - Store processed data on your personal BQ (truncate existing table if it exists)
-    - No need to cache processed data as CSV (it will be cached when queried back from BQ during training)
+    - Query the raw dataset from Google CloudStorage
+    - Download images locally
+    - Process data
     """
-    pass
+
+    print("Starting preprocessing")
+
+    df = load_annotations_csv()
+
+    df = normalize_data(df)
+
+    print("Data has been normalized")
+
+    df = aggregate_boxes(df)
+
+    data = add_image_path_to_bbox(df)
+
+    data = load_dataset(data)
+
+    print("Data has been normalized and processed")
+
+    return data
 
 
-def train():
+def train(data):
     """
-    - Retrieve data from BigQuery, or from `cache_path` if the file exists
-    - Store at `cache_path` if retrieved from BigQuery for future use
     - Train on the preprocessed dataset
     - Store training results and model weights
-
-    Return loss as a float
+    - Return loss as a float
     """
-    pass
+
+    print("Starting training")
+
+    train_ds, val_ds, test_data = splitting_data(data)
+
+    history = fit_model(train_ds, val_ds)
+
+    print("Training done")
+
+    return history
 
 
 def evaluate():
@@ -42,8 +64,7 @@ def pred():
 
 
 if __name__ == "__main__":
-    # preprocess()
-    # train()
+    data = preprocess()
+    history = train(data)
     # evaluate()
     # pred()
-    pass
