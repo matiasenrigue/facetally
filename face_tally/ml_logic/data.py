@@ -68,18 +68,14 @@ def update_local_raw_data_from_GCP():
 
     print("Updating local raw data from Google Cloud Storage...")
 
-    # Project path
-    project_root = os.path.dirname(os.getcwd())
-
-    # Lirectories path
-    local_image_folder = os.path.join(project_root, "raw_data", "image_data")
-    local_annot_folder = os.path.join(project_root, "raw_data")
+    # Images path
+    local_image_folder = os.path.join(LOCAL_DATA_PATH, "image_data")
 
     # Bucket paths
     bucket_image_folder = "image_data/"  # Destination folder in the bucket
     csv_name = "bbox_train.csv"
 
-    changes_csv = download_images_from_GCP(BUCKET_NAME, csv_name, local_annot_folder)
+    changes_csv = download_images_from_GCP(BUCKET_NAME, csv_name, LOCAL_DATA_PATH)
     changes_images = download_images_from_GCP(
         BUCKET_NAME, bucket_image_folder, local_image_folder
     )

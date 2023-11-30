@@ -13,5 +13,5 @@ GCP_REGION = os.environ.get("GCP_REGION")
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
 
 BOX_FORMAT = os.environ.get("BOX_FORMAT")
-LOCAL_DATA_PATH = os.path.expanduser("~/.lewagon/project_data")
+LOCAL_DATA_PATH = os.path.expanduser("~/.lewagon/facetally_data")
 class_mapping = {0: "face"}
