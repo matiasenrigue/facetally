@@ -18,3 +18,7 @@ pillow
 streamlit
 requests
 python-dotenv
+
+cv2
+ultralytics
+datetime
