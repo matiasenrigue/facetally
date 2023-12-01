@@ -16,6 +16,22 @@ def get_yolo(bbox_format=BOX_FORMAT):
     return yolo
 
 
+def get_model():
+    """
+    DOCUMENTATION
+    """
+
+    # PENDING
+    # load_best_model_from_GCP()
+    # Load list of model weigths from the GS - sort this list by metrics and load best ones
+    # bestmodel
+
+    # Get yolo model from GCP or from backbone if there is no model available
+    model = get_yolo()
+
+    return model
+
+
 def compile_model(model: models.YOLOV8Detector) -> models.YOLOV8Detector:
     """
     Compile the model with binary_crossentropy and Complete IoU (CIoU) metric.
