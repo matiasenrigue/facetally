@@ -21,14 +21,14 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
     Model evaluation with COCO Metric Callback
     """
 
-    def __init__(self, data, google_auth_credentials):
+    def __init__(self, data, save_path, google_auth_credentials):
         super().__init__()
         self.data = data
         self.metrics = keras_cv.metrics.BoxCOCOMetrics(
             bounding_box_format=BOX_FORMAT,
             evaluate_freq=1e9,
         )
-
+        self.save_path = save_path
         self.best_map = -1.0
         self.google_auth_credentials = google_auth_credentials
 
@@ -52,7 +52,7 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
         metrics = self.metrics.result(force=True)
         logs.update(metrics)
 
-        current_map = metrics["map"]
+        current_map = metrics["MaP"]
 
         if current_map > self.best_map:
             self.best_map = current_map
