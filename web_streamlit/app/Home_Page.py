@@ -27,6 +27,7 @@ st.markdown(
 
 # Large, stylized title with a touch of humor
 st.title("Welcome to Facetally! 📸")
+st.title("Prueba! 📸")
 
 # Description of the app with a sprinkle of humor
 st.write(
