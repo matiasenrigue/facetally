@@ -20,5 +20,4 @@ requests
 python-dotenv
 
 opencv-python-headless==4.6.0.66
-ultralytics
 datetime
