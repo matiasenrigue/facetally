@@ -23,3 +23,6 @@ test_preproc:
 
 test_training:
 	@python face_tally/visulization/visualisation.py
+
+train_model:
+	@python face_tally/interface/main.py
