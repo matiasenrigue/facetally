@@ -79,30 +79,19 @@ def dict_to_tuple(inputs):
     return inputs["images"], inputs["bounding_boxes"]
 
 
-def dict_to_tuple_train(train_ds):
+def dict_to_tuple_ds(ds):
     """
-    Applying dict_to_tuple function on train_ds
+    Applying dict_to_tuple function on ds
     """
-    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
-    return train_ds
-
-
-def dict_to_tuple_val(val_ds):
-    """
-    Applying dict_to_tuple function on val_ds
-    """
-    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
-    return val_ds
+    ds = ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    ds = ds.prefetch(tf.data.AUTOTUNE)
+    return ds
 
 
 def fit_model(train_ds, val_ds):
     """
     Fitting model on train_ds, using val_ds as validation data
     """
-    train_ds = dict_to_tuple_train(train_ds)
-    val_ds = dict_to_tuple_val(val_ds)
 
     # Get yolo model from GCP or from backbone if there is no model available
     yolo = get_yolo()
@@ -110,4 +99,5 @@ def fit_model(train_ds, val_ds):
     yolo = compile_model(yolo)
 
     history = yolo.fit(train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1)
+
     return yolo, history

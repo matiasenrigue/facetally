@@ -33,6 +33,11 @@ def train(data):
     # Split dataset to train, test, val
     train_ds, val_ds, test_data = splitting_data(data)
 
+    # Adapt input for fitting
+    train_ds = dict_to_tuple_ds(train_ds)
+    val_ds = dict_to_tuple_ds(val_ds)
+
+    # Fit the model
     yolo, history = fit_model(train_ds, val_ds)
 
     print("Training done")
