@@ -38,6 +38,7 @@ def train(data):
     val_ds = dict_to_tuple_ds(val_ds)
 
     # Fit the model
+    breakpoint()
     yolo, history = fit_model(train_ds, val_ds)
 
     print("Training done")

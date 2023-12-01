@@ -49,12 +49,12 @@ def splitting_data(data: tf.data.Dataset):
 
     all_images_len = data.cardinality().numpy()
 
-    train_idx = int(all_images_len * 0.8)
-    validation_idx = int(all_images_len * 0.15)
+    train_idx = int(all_images_len * 0.1)
+    validation_idx = int(all_images_len * 0.02)
 
     train_data = data.take(train_idx)
     val_data = data.skip(train_idx).take(validation_idx)
-    test_data = data.skip(train_idx + validation_idx)
+    # test_data = val_data = val_data.take(4)data.skip(train_idx + validation_idx)
 
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
@@ -65,6 +65,8 @@ def splitting_data(data: tf.data.Dataset):
     val_ds = val_ds.shuffle(BATCH_SIZE * 4)
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+
+    test_data = 0
 
     return train_ds, val_ds, test_data
 
@@ -105,6 +107,7 @@ def fit_model(train_ds, val_ds):
         callbacks=[
             EvaluateCOCOMetricsCallback(
                 val_ds,
+                "model.h5",
                 GOOGLE_APPLICATION_CREDENTIALS,
             )
         ],
