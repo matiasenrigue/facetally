@@ -8,6 +8,7 @@ EPOCH = int(os.environ.get("EPOCH"))
 
 GLOBAL_CLIPNORM = float(os.environ.get("GLOBAL_CLIPNORM"))
 
+GOOGLE_APPLICATION_CREDENTIALS = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 GCP_PROJECT = os.environ.get("GCP_PROJECT")
 GCP_REGION = os.environ.get("GCP_REGION")
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
