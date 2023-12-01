@@ -26,28 +26,27 @@ st.set_page_config(
 
 
 # Large, stylized title with a touch of humor
-st.title("Welcome to Facetally! 📸")
-st.title("Prueba!??? 📸")
+st.title("witamy fasetowo! 📸")
 
 # Description of the app with a sprinkle of humor
 st.write(
     """
-    Grab your imaginary sunglasses because you're about to enter the Facetally Funhouse! 🕶️
+    Chwyć swoje wyimaginowane okulary przeciwsłoneczne, bo zaraz wejdziesz do Facetally Funhouse! 🕶️
 
-    Facetally is your go-to app for face recognition and crowd counting. Trust us, with us, counting faces
-    becomes a fun and fascinating experience! 🚀
+    Facetally to Twoja ulubiona aplikacja do rozpoznawania twarzy i liczenia tłumów. Zaufaj nam, razem z nami liczymy twarze
+    staje się zabawnym i fascynującym doświadczeniem! 🚀
 
-    **Step Right Up!**
-    - 🤖 Witness the magic of precise face recognition, even in the craziest crowds.
-    - 🕰️ Experience real-time face counting with efficiency and precision, providing valuable insights.
+    **Krok w górę!**
+    - 🤖 Doświadcz magii precyzyjnego rozpoznawania twarzy, nawet w najbardziej szalonym tłumie.
+    - 🕰️ Doświadcz liczenia twarzy w czasie rzeczywistym z wydajnością i precyzją, dostarczając cennych informacji.
 
-    **Unlock Possibilities:**
-    - 🎉 Seamlessly manage crowds at events and public spaces, optimizing operational efficiency.
-    - 👨‍💻 Say goodbye to Kitt's "Are you here?" prompt every morning: Face Tally can automatically spot your pretty face
+    **Odblokuj możliwości:**
+    - 🎉 Bezproblemowo zarządzaj tłumami na imprezach i w przestrzeni publicznej, optymalizując efektywność operacyjną.
+    - 👨‍💻 Pożegnaj się z „Are you here” Kitta? monit każdego ranka: Face Tally może automatycznie wykryć Twoją śliczną buźkę
 
-    **Capture the Moment:**
-    - 📸 Upload an image and see faces come to life with our app's dynamic analysis.
+    **Uchwycić moment:**
+    - 📸 Prześlij zdjęcie i zobacz, jak twarze ożywają dzięki analizie dynamicznej naszej aplikacji.
 
-    So, fasten your seatbelt, upload an image, and let's embark on this thrilling facial recognition journey! 🥳📷
+    Zatem zapnij pasy, prześlij zdjęcie i wyrusz w ekscytującą podróż związaną z rozpoznawaniem twarzy
     """
 )
