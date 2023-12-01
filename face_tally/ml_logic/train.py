@@ -101,11 +101,13 @@ def fit_model(train_ds, val_ds):
     """
     Fitting model on train_ds, using val_ds as validation data
     """
-    yolo = get_yolo()
-    yolo_compile = get_compile(yolo)
     train_ds = dict_to_tuple_train(train_ds)
     val_ds = dict_to_tuple_val(val_ds)
-    history = yolo_compile.fit(
-        train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1
-    )
+
+    # Get yolo model from GCP or from backbone if there is no model available
+    yolo = get_yolo()
+
+    yolo = compile_model(yolo)
+
+    history = yolo.fit(train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1)
     return yolo, history

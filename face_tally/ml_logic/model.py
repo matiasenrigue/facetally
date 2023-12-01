@@ -16,7 +16,7 @@ def get_yolo(bbox_format=BOX_FORMAT):
     return yolo
 
 
-def get_compile(model):
+def compile_model(model: models.YOLOV8Detector) -> models.YOLOV8Detector:
     """
     Compile the model with binary_crossentropy and Complete IoU (CIoU) metric.
     """
