@@ -1,6 +1,7 @@
 from face_tally.params import *
 from face_tally.ml_logic.preprocessing import load_dataset
 from face_tally.ml_logic.model import *
+from face_tally.callbacks.tfCallbacks import EvaluateCOCOMetricsCallback
 import tensorflow as tf
 from tensorflow import keras
 from keras_cv import layers
@@ -55,10 +56,6 @@ def splitting_data(data: tf.data.Dataset):
     val_data = data.skip(train_idx).take(validation_idx)
     test_data = data.skip(train_idx + validation_idx)
 
-    # # Just for test
-    # train_data = train_data.take(4)
-    # val_data = val_data.take(4)
-
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
     train_ds = train_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
@@ -93,11 +90,25 @@ def fit_model(train_ds, val_ds):
     Fitting model on train_ds, using val_ds as validation data
     """
 
-    # Get yolo model from GCP or from backbone if there is no model available
-    yolo = get_yolo()
+    # Get best model from google cloud
+    yolo = get_model()
 
+    # Compile the model
     yolo = compile_model(yolo)
 
-    history = yolo.fit(train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1)
+    # Train the model starting from the best model in Google Cloud.
+    # Save the model in each epoch if there is an improvement
+    history = yolo.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=EPOCH,
+        callbacks=[
+            EvaluateCOCOMetricsCallback(
+                val_ds,
+                GOOGLE_APPLICATION_CREDENTIALS,
+            )
+        ],
+        verbose=1,
+    )
 
     return yolo, history
