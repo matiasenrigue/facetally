@@ -6,7 +6,7 @@ from tensorflow import keras
 from keras_cv import layers
 
 
-def get_augmenter(bbox_format="rel_xyxy"):
+def get_augmenter(bbox_format=BOX_FORMAT):
     """
     Function to define our augmenter, will be applied on train_ds
     """
@@ -26,7 +26,7 @@ def get_augmenter(bbox_format="rel_xyxy"):
     return augmenter
 
 
-def get_resizer(bbox_format="rel_xyxy"):
+def get_resizer(bbox_format=BOX_FORMAT):
     """
     Function to define our resizer, will be applied on val_ds
     """
@@ -55,8 +55,9 @@ def splitting_data(data: tf.data.Dataset):
     val_data = data.skip(train_idx).take(validation_idx)
     test_data = data.skip(train_idx + validation_idx)
 
-    # Just for test
-    train_data = train_data.take(4)
+    # # Just for test
+    # train_data = train_data.take(4)
+    # val_data = val_data.take(4)
 
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
@@ -104,5 +105,7 @@ def fit_model(train_ds, val_ds):
     yolo_compile = get_compile(yolo)
     train_ds = dict_to_tuple_train(train_ds)
     val_ds = dict_to_tuple_val(val_ds)
-    history = yolo_compile.fit(train_ds, validation_data=val_ds, epochs=1, verbose=1)
-    return history
+    history = yolo_compile.fit(
+        train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1
+    )
+    return yolo, history

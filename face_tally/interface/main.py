@@ -33,11 +33,11 @@ def train(data):
 
     train_ds, val_ds, test_data = splitting_data(data)
 
-    history = fit_model(train_ds, val_ds)
+    yolo, history = fit_model(train_ds, val_ds)
 
     print("Training done")
 
-    return history
+    return yolo, history
 
 
 def evaluate():
@@ -60,6 +60,6 @@ if __name__ == "__main__":
     update_local_raw_data_from_GCP()
     dataset = preprocess()
     train_ds, val_ds, test_data = splitting_data(dataset)
-    history = train(dataset)
+    yolo, history = train(dataset)
     # evaluate()
     # pred()
