@@ -4,6 +4,8 @@ import os
 import pandas as pd
 import tensorflow as tf
 from google.cloud import storage
+from face_tally.credentials import create_google_cloud_client
+import asyncio
 
 
 def load_annotations_csv() -> pd.DataFrame:
@@ -26,7 +28,7 @@ def load_image(image_path: str) -> tf.Variable:
     return image
 
 
-def download_images_from_GCP(
+async def download_images_from_GCP(
     bucket_name: str, folder_path: str, destination_folder: str, overwrite=False
 ) -> bool:
     """
@@ -35,7 +37,7 @@ def download_images_from_GCP(
     Returns True if something is downloaded or updated
     """
     # Initialize the Cloud Storage client
-    storage_client = storage.Client()
+    storage_client = await create_google_cloud_client()
 
     # Get the bucket
     bucket = storage_client.bucket(bucket_name)
@@ -61,7 +63,7 @@ def download_images_from_GCP(
     return True if count > 0 else False
 
 
-def update_local_raw_data_from_GCP() -> None:
+async def update_local_raw_data_from_GCP() -> None:
     """
     Updates the local raw data with the data in Google Cloud Storage
     """
@@ -75,8 +77,8 @@ def update_local_raw_data_from_GCP() -> None:
     bucket_image_folder = "image_data/"  # Destination folder in the bucket
     csv_name = "bbox_train.csv"
 
-    changes_csv = download_images_from_GCP(BUCKET_NAME, csv_name, LOCAL_DATA_PATH)
-    changes_images = download_images_from_GCP(
+    changes_csv = await download_images_from_GCP(BUCKET_NAME, csv_name, LOCAL_DATA_PATH)
+    changes_images = await download_images_from_GCP(
         BUCKET_NAME, bucket_image_folder, local_image_folder
     )
     if not (changes_csv or changes_images):
@@ -85,3 +87,7 @@ def update_local_raw_data_from_GCP() -> None:
         print("Process finished, local raw data folder is up to date")
 
     return None
+
+
+if __name__ == "__main__":
+    asyncio.run(update_local_raw_data_from_GCP())
