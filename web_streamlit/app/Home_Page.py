@@ -10,20 +10,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Set the background color and text color
-# st.markdown(
-#     """
-#     <style>
-#         body {
-#             background-color: #F0F2F6; /* Background color */
-#             color: #262730; /* Text color */
-#             font-family: 'Roboto', sans-serif; /* Font family - Let's add some fun! */
-#         }
-#     </style>
-#     """,
-#     unsafe_allow_html=True,
-# )
-
 
 # Large, stylized title with a touch of humor
 st.title("witamy fasetowo! 📸")
