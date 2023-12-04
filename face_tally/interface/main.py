@@ -33,17 +33,12 @@ def train(data):
     # Split dataset to train, test, val
     train_ds, val_ds, test_data = splitting_data(data)
 
-    # Adapt input for fitting
-    train_ds = dict_to_tuple_ds(train_ds)
-    val_ds = dict_to_tuple_ds(val_ds)
-
     # Fit the model
-    breakpoint()
-    yolo, history = fit_model(train_ds, val_ds)
+    fit_model(train_ds, val_ds)
 
     print("Training done")
 
-    return yolo, history, test_data
+    return test_data
 
 
 def evaluate():
@@ -69,4 +64,4 @@ if __name__ == "__main__":
     dataset = preprocess()
 
     # Train the yolo model with the preprocessed data
-    yolo, history, test_data = train(dataset)
+    test_data = train(dataset)

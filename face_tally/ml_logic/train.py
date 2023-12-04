@@ -39,6 +39,13 @@ def get_resizer(bbox_format=BOX_FORMAT):
     return resizing
 
 
+def dict_to_tuple(inputs):
+    """
+    Defines the class ids and mapping (in this case, we only have one class "face")
+    """
+    return inputs["images"], inputs["bounding_boxes"]
+
+
 def splitting_data(data: tf.data.Dataset):
     """
     Function to split the data into train, validation, and test datasets (80%, 15%, 5%)
@@ -49,12 +56,14 @@ def splitting_data(data: tf.data.Dataset):
 
     all_images_len = data.cardinality().numpy()
 
-    train_idx = int(all_images_len * 0.1)
-    validation_idx = int(all_images_len * 0.02)
+    data_set_ratio = 0.2
+    train_idx = int(all_images_len * 0.1 * data_set_ratio)
+    validation_idx = int(all_images_len * 0.02 * data_set_ratio)
 
     train_data = data.take(train_idx)
     val_data = data.skip(train_idx).take(validation_idx)
-    # test_data = val_data = val_data.take(4)data.skip(train_idx + validation_idx)
+    # test_data = data.skip(train_idx + validation_idx)
+    test_data = 0
 
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
@@ -66,25 +75,13 @@ def splitting_data(data: tf.data.Dataset):
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
-    test_data = 0
+    # Convert to tuple
+    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
+    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     return train_ds, val_ds, test_data
-
-
-def dict_to_tuple(inputs):
-    """
-    Defines the class ids and mapping (in this case, we only have one class "face")
-    """
-    return inputs["images"], inputs["bounding_boxes"]
-
-
-def dict_to_tuple_ds(ds):
-    """
-    Applying dict_to_tuple function on ds
-    """
-    ds = ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    ds = ds.prefetch(tf.data.AUTOTUNE)
-    return ds
 
 
 def fit_model(train_ds, val_ds):

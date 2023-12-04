@@ -39,24 +39,27 @@ def download_best_model_from_GCP(
     # List objects in the specified folder path
     blobs = bucket.list_blobs(prefix=folder_path)
 
-    max_number = float("-inf")  # Initialize max_number to negative infinity
-    max_number_blob = None  # Initialize variable to store the blob with the max number
+    # Sort all file in numerical order from smaller to bigger
+    all_files = [each.name for each in blobs if each.name != "models/"]
+    all_files.sort(key=lambda x: float(x.split("_")[1]))
 
-    # Iterate through the blob objects in the specified folder
-    breakpoint()
-    for blob in blobs:
-        # Extract numbers from the file name
-        numbers_in_name = [
-            int(s) for s in blob.name.split("/")[-1].split("_") if s.isdigit()
-        ]
+    # Select the best model (higher MaP)
+    best_blob = all_files[-1]
 
-        if numbers_in_name:
-            current_max = numbers_in_name
-            if current_max > max_number:
-                max_number = current_max
-                max_number_blob = blob
+    # Download the model
+    blob = bucket.blob(best_blob)
 
-    return max_number_blob
+    weights_path = os.path.join(LOCAL_DATA_PATH, "models")
+
+    # Create a local folder if it doesn't exist
+    os.makedirs(weights_path, exist_ok=True)
+    save_path = os.path.join(weights_path, "best_weight.h5")
+    blob.download_to_filename(save_path)
+
+    # Load saved model
+    model = models.load_model(save_path)
+
+    return model
 
 
 def get_model():
