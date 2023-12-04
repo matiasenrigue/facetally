@@ -62,11 +62,14 @@ def download_best_model_from_GCP(
     # Download the model
     blob = bucket.blob(best_blob)
 
+    # Define the local folder to save the model
     weights_path = os.path.join(LOCAL_DATA_PATH, "models")
 
-    # Create a local folder if it doesn't exist
+    # Create the local folder if it doesn't exist
     os.makedirs(weights_path, exist_ok=True)
     save_path = os.path.join(weights_path, "best_weight.h5")
+
+    # Download model
     blob.download_to_filename(save_path)
 
     # Load saved model
