@@ -34,11 +34,11 @@ def train(data):
     train_ds, val_ds, test_data = splitting_data(data)
 
     # Fit the model
-    fit_model(train_ds, val_ds)
+    yolo, history = fit_model(train_ds, val_ds)
 
     print("Training done")
 
-    return test_data
+    return yolo, test_data
 
 
 def evaluate():
