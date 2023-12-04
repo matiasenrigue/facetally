@@ -19,7 +19,7 @@ And outputs a prediction made with the Model, in the form of bounding boxes
 app = FastAPI()
 app.state.model = YOLO("yolov8n.pt")
 
-
+register_heif_opener()
 
 @app.get("/ok")
 def read_root():
