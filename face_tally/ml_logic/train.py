@@ -1,6 +1,7 @@
 from face_tally.params import *
 from face_tally.ml_logic.preprocessing import load_dataset
 from face_tally.ml_logic.model import *
+from face_tally.callbacks.tfCallbacks import EvaluateCOCOMetricsCallback
 import tensorflow as tf
 from tensorflow import keras
 from keras_cv import layers
@@ -38,6 +39,13 @@ def get_resizer(bbox_format=BOX_FORMAT):
     return resizing
 
 
+def dict_to_tuple(inputs):
+    """
+    Defines the class ids and mapping (in this case, we only have one class "face")
+    """
+    return inputs["images"], inputs["bounding_boxes"]
+
+
 def splitting_data(data: tf.data.Dataset):
     """
     Function to split the data into train, validation, and test datasets (80%, 15%, 5%)
@@ -48,14 +56,15 @@ def splitting_data(data: tf.data.Dataset):
 
     all_images_len = data.cardinality().numpy()
 
-    train_idx = int(all_images_len * 0.8)
-    validation_idx = int(all_images_len * 0.15)
+    data_set_ratio = 0.2
+    train_idx = int(all_images_len * 0.1 * data_set_ratio)
+    validation_idx = int(all_images_len * 0.02 * data_set_ratio)
 
     train_data = data.take(train_idx)
     val_data = data.skip(train_idx).take(validation_idx)
     test_data = data.skip(train_idx + validation_idx)
 
-    # # Just for test
+    # Only for test
     # train_data = train_data.take(4)
     # val_data = val_data.take(4)
 
@@ -72,40 +81,35 @@ def splitting_data(data: tf.data.Dataset):
     return train_ds, val_ds, test_data
 
 
-def dict_to_tuple(inputs):
-    """
-    Defines the class ids and mapping (in this case, we only have one class "face")
-    """
-    return inputs["images"], inputs["bounding_boxes"]
-
-
-def dict_to_tuple_train(train_ds):
-    """
-    Applying dict_to_tuple function on train_ds
-    """
-    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
-    return train_ds
-
-
-def dict_to_tuple_val(val_ds):
-    """
-    Applying dict_to_tuple function on val_ds
-    """
-    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
-    return val_ds
-
-
 def fit_model(train_ds, val_ds):
     """
     Fitting model on train_ds, using val_ds as validation data
     """
-    yolo = get_yolo()
-    yolo_compile = get_compile(yolo)
-    train_ds = dict_to_tuple_train(train_ds)
-    val_ds = dict_to_tuple_val(val_ds)
-    history = yolo_compile.fit(
-        train_ds, validation_data=val_ds, epochs=EPOCH, verbose=1
+    # Extract the input from the preproc dictionary, to tuple
+    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
+    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
+
+    # Get best model from google cloud
+    yolo, best_MaP = get_model()
+
+    # Compile the model
+    yolo = compile_model(yolo)
+
+    # Train the model starting from the best model in Google Cloud.
+    # Save the model in each epoch if there is an improvement
+    history = yolo.fit(
+        train_ds,
+        validation_data=val_ds,
+        epochs=EPOCH,
+        callbacks=[
+            EvaluateCOCOMetricsCallback(
+                val_ds,
+                best_MaP,
+            )
+        ],
+        verbose=1,
     )
+
     return yolo, history

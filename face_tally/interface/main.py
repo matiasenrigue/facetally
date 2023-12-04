@@ -6,9 +6,9 @@ from face_tally.ml_logic.train import *
 
 def preprocess():
     """
-    - Query the raw dataset from Google CloudStorage
+    - Query the raw dataset from Google Cloud Storage
     - Download images locally
-    - Process data
+    - Process data into yolo format, save in RAM only
     """
     print("Starting preprocessing")
 
@@ -18,48 +18,37 @@ def preprocess():
 
     dataset = create_dataset(df_normalized)
 
+    print("✅ Preprocessing done")
+
     return dataset
 
 
 def train(data):
     """
     - Train on the preprocessed dataset
-    - Store training results and model weights
-    - Return loss as a float
+    - Store model weights locally and in Google Cloud Storage
+    - Return model and split test data set
     """
-    breakpoint()
 
     print("Starting training")
 
+    # Split dataset to train, test, val
     train_ds, val_ds, test_data = splitting_data(data)
 
+    # Fit the model
     yolo, history = fit_model(train_ds, val_ds)
 
-    print("Training done")
+    print("✅ Training done")
 
-    return yolo, history
-
-
-def evaluate():
-    """
-    Evaluate the performance of the latest production model on processed data
-    Return loss as a float
-    """
-    pass
-
-
-def pred():
-    """
-    Make a prediction using the latest trained model
-    """
-    pass
+    return yolo, test_data
 
 
 if __name__ == "__main__":
     # Updates the local raw data with the data in Google Cloud Storage
     update_local_raw_data_from_GCP()
+
+    # Preprocess the data and convert it to yolo format
     dataset = preprocess()
-    train_ds, val_ds, test_data = splitting_data(dataset)
-    yolo, history = train(dataset)
-    # evaluate()
-    # pred()
+
+    # Train the yolo model with the preprocessed data
+    yolo, test_data = train(dataset)

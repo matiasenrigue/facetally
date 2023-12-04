@@ -20,6 +20,7 @@ def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
     and returns a new DataFrame with the normalized bbox info,
     grouped by the "Name" column (= our images)
     """
+
     df["LEFT"] = df["xmin"] / df["width"]
     df["TOP"] = df["ymin"] / df["height"]
     df["RIGHT"] = df["xmax"] / df["width"]
@@ -46,6 +47,7 @@ def create_dataset(df: pd.DataFrame) -> tf.data.Dataset:
     bboxes = []
 
     test_image_folder = os.path.join(LOCAL_DATA_PATH, "image_data")
+
     # Iterate through the grouped dataframe and populate the lists with image paths and bounding boxes.
     for _, row in df.iterrows():
         image_path = os.path.join(test_image_folder, row["Name"])
@@ -75,7 +77,9 @@ def load_dataset(image_path: str, bbox: tf.Variable, classes: tf.Variable) -> di
     """
     # Load the image
     image = load_image(image_path)
+
     # Create a dictionary for bounding boxes with 'boxes' and 'classes' as keys
     bounding_boxes = {"boxes": bbox, "classes": classes}
+
     # Return a dictionary with 'images' and 'bounding_boxes'
     return {"images": tf.cast(image, tf.float32), "bounding_boxes": bounding_boxes}
