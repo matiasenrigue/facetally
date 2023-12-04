@@ -2,9 +2,10 @@ from tensorflow import keras
 import keras_cv
 from google.cloud import storage
 from face_tally.params import *
+from face_tally.credentials import create_google_cloud_client
 
 
-def save_model_GCP(model_path) -> None:
+async def save_model_GCP(model_path) -> None:
     """
     It uploads the local model weights to Google Cloud Storage
     """
@@ -12,7 +13,7 @@ def save_model_GCP(model_path) -> None:
     model_filename = model_path.split("/")[-1]
 
     # Connect to GCP
-    client = storage.Client()
+    client = await create_google_cloud_client()
     bucket = client.bucket(BUCKET_NAME)
 
     # Save it in bucket under this path
@@ -40,7 +41,7 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
         )
         self.best_map = best_MaP
 
-    def on_epoch_end(self, epoch, logs):
+    async def on_epoch_end(self, epoch, logs):
         self.metrics.reset_state()
         for batch in self.data:
             images = batch[0]
@@ -69,6 +70,6 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
 
             from_path = os.path.join(model_path, f"yolo_{current_map}_weights.h5")
             self.model.save_weights(from_path)
-            save_model_GCP(from_path)
+            await save_model_GCP(from_path)
 
         return logs
