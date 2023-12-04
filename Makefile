@@ -17,13 +17,13 @@ reinstall:
 	@pip install -e .
 
 update_raw_data_from_GCP:
-	python -c 'from face_tally.ml_logic.data import update_local_raw_data_from_GCP; update_local_raw_data_from_GCP()'
+	@python -c 'from face_tally.ml_logic.data import update_local_raw_data_from_GCP; update_local_raw_data_from_GCP()'
 
 test_preproc:
-	@python face_tally/visulization/visualisation.py
+	@python -c 'from face_tally.visualization.visualization import test_preprocessing; test_preprocessing()'
 
 test_training:
-	@python face_tally/visulization/visualisation.py
+	@python -c 'from face_tally.visualization.visualization import test_training; test_training()'
 
 train_model:
 	@python face_tally/interface/main.py
