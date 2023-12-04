@@ -6,7 +6,7 @@ import tensorflow as tf
 from google.cloud import storage
 
 
-def load_annotations_csv():
+def load_annotations_csv() -> pd.DataFrame:
     """
     This function is to load the annotations of the bboxes (see in preprocessing)
     """
@@ -61,7 +61,7 @@ def download_images_from_GCP(
     return True if count > 0 else False
 
 
-def update_local_raw_data_from_GCP():
+def update_local_raw_data_from_GCP() -> None:
     """
     Updates the local raw data with the data in Google Cloud Storage
     """
@@ -83,3 +83,5 @@ def update_local_raw_data_from_GCP():
         print("Process finished, local files were already up to date")
     else:
         print("Process finished, local raw data folder is up to date")
+
+    return None

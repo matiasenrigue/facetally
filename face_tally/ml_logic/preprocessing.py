@@ -20,6 +20,7 @@ def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
     and returns a new DataFrame with the normalized bbox info,
     grouped by the "Name" column (= our images)
     """
+
     df["LEFT"] = df["xmin"] / df["width"]
     df["TOP"] = df["ymin"] / df["height"]
     df["RIGHT"] = df["xmax"] / df["width"]
@@ -29,6 +30,7 @@ def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
     df_rel_xyxy = df[["Name", "LEFT", "TOP", "RIGHT", "BOTTOM"]]
 
     # Apply the aggregate function to the grouped data and reset the index.
+
     grouped = (
         df_rel_xyxy.groupby("Name").apply(aggregate_boxes).reset_index(name="boxes")
     )
@@ -46,6 +48,7 @@ def create_dataset(df: pd.DataFrame) -> tf.data.Dataset:
     bboxes = []
 
     test_image_folder = os.path.join(LOCAL_DATA_PATH, "image_data")
+
     # Iterate through the grouped dataframe and populate the lists with image paths and bounding boxes.
     for _, row in df.iterrows():
         image_path = os.path.join(test_image_folder, row["Name"])

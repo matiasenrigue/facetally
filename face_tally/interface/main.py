@@ -24,20 +24,21 @@ def preprocess():
 def train(data):
     """
     - Train on the preprocessed dataset
-    - Store training results and model weights
-    - Return loss as a float
+    - Store model weights
+    - Return ???????
     """
-    breakpoint()
 
     print("Starting training")
 
+    # Split dataset to train, test, val
     train_ds, val_ds, test_data = splitting_data(data)
 
-    yolo, history = fit_model(train_ds, val_ds)
+    # Fit the model
+    fit_model(train_ds, val_ds)
 
     print("Training done")
 
-    return yolo, history
+    return test_data
 
 
 def evaluate():
@@ -58,8 +59,9 @@ def pred():
 if __name__ == "__main__":
     # Updates the local raw data with the data in Google Cloud Storage
     update_local_raw_data_from_GCP()
+
+    # Preprocess the data and convert it to yolo format
     dataset = preprocess()
-    train_ds, val_ds, test_data = splitting_data(dataset)
-    yolo, history = train(dataset)
-    # evaluate()
-    # pred()
+
+    # Train the yolo model with the preprocessed data
+    test_data = train(dataset)
