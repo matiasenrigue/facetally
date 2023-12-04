@@ -4,7 +4,7 @@ import streamlit as st
 
 # Set the page title and icon
 st.set_page_config(
-    page_title="Facetally - Face Recognition",
+    page_title="FaceTally - Face Recognition",
     page_icon="👤",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -12,27 +12,27 @@ st.set_page_config(
 
 
 # Large, stylized title with a touch of humor
-st.title("Witamy w Facetally! 📸")
+st.title("Welcome to FaceTally! 📸")
 
 # Description of the app with a sprinkle of humor
 st.write(
     """
-    Chwyć swoje wyimaginowane okulary przeciwsłoneczne, bo zaraz wejdziesz do Facetally Funhouse! 🕶️
+    📸 Unleash the Power of FaceTally! 🚀
 
-    Facetally to Twoja ulubiona aplikacja do rozpoznawania twarzy i liczenia tłumów. Zaufaj nam, razem z nami liczymy twarze
-    staje się zabawnym i fascynującym doświadczeniem! 🚀
+    Facetally is your favorite face recognition and crowd counting app. Trust us, counting faces becomes a fun and fascinating experience with us! 🚀
 
-    **Krok w górę!**
-    - 🤖 Doświadcz magii precyzyjnego rozpoznawania twarzy, nawet w najbardziej szalonym tłumie.
-    - 🕰️ Doświadcz liczenia twarzy w czasie rzeczywistym z wydajnością i precyzją, dostarczając cennych informacji.
+    ***Step Up Your Game!***
 
-    **Odblokuj możliwości:**
-    - 🎉 Bezproblemowo zarządzaj tłumami na imprezach i w przestrzeni publicznej, optymalizując efektywność operacyjną.
-    - 👨‍💻 Pożegnaj się z „Are you here” Kitta? monit każdego ranka: Face Tally może automatycznie wykryć Twoją śliczną buźkę
+    🔢 Instantly tally up the good vibes in your pics!
+    🤖 Experience the magic of precise face recognition, even in the craziest crowds.
+    🕰️ Enjoy real-time face counting with efficiency and precision, providing valuable insights.
 
-    **Uchwycić moment:**
-    - 📸 Prześlij zdjęcie i zobacz, jak twarze ożywają dzięki analizie dynamicznej naszej aplikacji.
+    Unlock Possibilities:
 
-    Zatem zapnij pasy, prześlij zdjęcie i wyrusz w ekscytującą podróż związaną z rozpoznawaniem twarzy!   📷
+    🎉 Seamlessly manage crowds at events and in public spaces, optimizing operational efficiency.
+    👨‍💻 Say goodbye to the "Are you here" Kit? prompt every morning: FaceTally can automatically detect your lovely face.
+    🎉 Perfect for parties, selfies, and capturing those unforgettable moments.
+
+    Get ready to tally, share, and spread the joy! 🎊 #FaceTallyMagic
     """
 )

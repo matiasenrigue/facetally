@@ -20,9 +20,6 @@ app = FastAPI()
 app.state.model = YOLO("yolov8n.pt")
 
 
-# This is given to the code to give Python the ability to read iPhone pictures
-register_heif_opener()
-
 
 @app.get("/ok")
 def read_root():
