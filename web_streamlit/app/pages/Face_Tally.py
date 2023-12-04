@@ -33,7 +33,7 @@ if img_file_buffer is not None:
 
     res = requests.post(
         url="https://face-tally-r5t56frjwa-no.a.run.app/upload_image",
-        files={"img": img_file_buffer},
+        files={"img": bytes_data},
     ).json()["boundsboxes"]
 
     # Things done in the API:
