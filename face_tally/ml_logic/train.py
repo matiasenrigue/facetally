@@ -65,8 +65,8 @@ def splitting_data(data: tf.data.Dataset):
     test_data = data.skip(train_idx + validation_idx)
 
     # Only for test
-    train_data = train_data.take(4)
-    val_data = val_data.take(4)
+    # train_data = train_data.take(4)
+    # val_data = val_data.take(4)
 
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)

@@ -64,4 +64,4 @@ if __name__ == "__main__":
     dataset = preprocess()
 
     # Train the yolo model with the preprocessed data
-    test_data = train(dataset)
+    yolo, test_data = train(dataset)
