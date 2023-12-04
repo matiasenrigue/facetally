@@ -10,7 +10,7 @@ def get_yolo() -> models.YOLOV8Backbone:
     Need to define the size of the backbone
     """
     # Size options: xs, s, m, l, xl
-    backbone_name = "yolo_v8_" + BACKBONE_SIZE + "_backbone_coco"
+    backbone_name = "yolo_v8_" + str(BACKBONE_SIZE) + "_backbone_coco"
 
     yolo = models.YOLOV8Detector(
         num_classes=len(class_mapping),
@@ -18,6 +18,7 @@ def get_yolo() -> models.YOLOV8Backbone:
         backbone=models.YOLOV8Backbone.from_preset(backbone_name),
         fpn_depth=1,
     )
+
     return yolo
 
 
@@ -38,6 +39,12 @@ def download_best_model_from_GCP(
 
     # List objects in the specified folder path
     blobs = bucket.list_blobs(prefix=folder_path)
+
+    # Check if there is any existing blob in the folder. Return None if not
+    # Count the number of blobs in the folder, excluding the folder placeholder
+    blob_count = sum(1 for blob in blobs if blob.name != folder_path)
+    if blob_count == 0:
+        return None
 
     # Sort all file in numerical order from smaller to bigger
     all_files = [each.name for each in blobs if each.name != "models/"]
@@ -74,7 +81,7 @@ def get_model():
     )
     if model is None:
         # Load model from backbone trained with coco
-        print("Loading model from backbone")
+        print("Loading model from backbone, size: ", str(BACKBONE_SIZE))
         model = get_yolo()
 
     return model

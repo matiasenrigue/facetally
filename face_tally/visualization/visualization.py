@@ -72,7 +72,7 @@ def visualize_detections(model, dataset, bounding_box_format):
 def test_training():
     dataset = preprocess()
     train_ds, val_ds, test_data = splitting_data(dataset)
-    yolo, hitory = train(dataset)
+    yolo, test_data = train(dataset)
 
     visualize_detections(yolo, dataset=val_ds, bounding_box_format=BOX_FORMAT)
 
