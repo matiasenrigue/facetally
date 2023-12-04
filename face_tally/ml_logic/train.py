@@ -75,12 +75,6 @@ def splitting_data(data: tf.data.Dataset):
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
-    # Convert to tuple
-    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
-    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
-
     return train_ds, val_ds, test_data
 
 
@@ -88,6 +82,11 @@ def fit_model(train_ds, val_ds):
     """
     Fitting model on train_ds, using val_ds as validation data
     """
+    # Extract the input from the preproc dictionary, to tuple
+    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
+    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     # Get best model from google cloud
     yolo = get_model()
