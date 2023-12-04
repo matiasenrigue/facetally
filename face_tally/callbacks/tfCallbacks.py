@@ -5,10 +5,20 @@ from face_tally.params import *
 
 
 def save_model_GCP(model_path) -> None:
+    """
+    It uploads the local model weights to Google Cloud Storage
+    """
+    # Filter the model name from the path
     model_filename = model_path.split("/")[-1]
+
+    # Connect to GCP
     client = storage.Client()
     bucket = client.bucket(BUCKET_NAME)
+
+    # Save it in bucket under this path
     blob = bucket.blob(f"models/{model_filename}")
+
+    # Upload model
     blob.upload_from_filename(model_path)
 
     print("✅ Weights saved to GCS")

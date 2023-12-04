@@ -26,23 +26,6 @@ def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
     )
 
 
-# NOTES: TO USE FIRST FUNCTION AND VISUALISE DATASET
-
-
-def test_preprocessing():
-    dataset = preprocess()
-
-    train_ds, val_ds, test_data = splitting_data(dataset)
-
-    visualize_dataset(
-        train_ds, bounding_box_format=BOX_FORMAT, value_range=(0, 255), rows=2, cols=2
-    )
-
-
-#####################################################################################################
-#####################################################################################################
-
-
 def visualize_detections(model, dataset, bounding_box_format):
     """
     This function is meant to visualise our predictions
@@ -70,7 +53,14 @@ def visualize_detections(model, dataset, bounding_box_format):
     )
 
 
-# NOTES: TO USE SECOND FUNCTION
+def test_preprocessing():
+    dataset = preprocess()
+
+    train_ds, val_ds, test_data = splitting_data(dataset)
+
+    visualize_dataset(
+        train_ds, bounding_box_format=BOX_FORMAT, value_range=(0, 255), rows=2, cols=2
+    )
 
 
 def test_training():

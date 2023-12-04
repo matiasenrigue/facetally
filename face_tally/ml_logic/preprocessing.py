@@ -30,7 +30,6 @@ def normalize_data(df: pd.DataFrame) -> pd.DataFrame:
     df_rel_xyxy = df[["Name", "LEFT", "TOP", "RIGHT", "BOTTOM"]]
 
     # Apply the aggregate function to the grouped data and reset the index.
-
     grouped = (
         df_rel_xyxy.groupby("Name").apply(aggregate_boxes).reset_index(name="boxes")
     )
@@ -78,7 +77,9 @@ def load_dataset(image_path: str, bbox: tf.Variable, classes: tf.Variable) -> di
     """
     # Load the image
     image = load_image(image_path)
+
     # Create a dictionary for bounding boxes with 'boxes' and 'classes' as keys
     bounding_boxes = {"boxes": bbox, "classes": classes}
+
     # Return a dictionary with 'images' and 'bounding_boxes'
     return {"images": tf.cast(image, tf.float32), "bounding_boxes": bounding_boxes}
