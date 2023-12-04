@@ -1,4 +1,5 @@
 create_folders:
+	@mkdir ~/.lewagon/
 	@mkdir ~/.lewagon/facetally_data
 	@mkdir ~/.lewagon/facetally_data/image_data
 	@echo Successfully created folders
