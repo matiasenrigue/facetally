@@ -2,8 +2,8 @@ from keras_cv import bounding_box
 from keras_cv import visualization
 from face_tally.params import *
 from face_tally.interface.main import preprocess, train
-from face_tally.ml_logic.train import splitting_data
-import matplotlib.pyplot as plt
+from face_tally.ml_logic.train import splitting_data, dict_to_tuple
+import tensorflow as tf
 
 
 def visualize_dataset(inputs, value_range, rows, cols, bounding_box_format):
@@ -47,6 +47,10 @@ def visualize_detections(model, dataset, bounding_box_format):
     """
     This function is meant to visualise our predictions
     """
+    # Extract the input from the preproc dictionary, to tuple
+    dataset = dataset.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    dataset = dataset.prefetch(tf.data.AUTOTUNE)
+
     images, y_true = next(iter(dataset.take(1)))
     y_pred = model.predict(images)
     y_pred = bounding_box.to_ragged(y_pred)
@@ -72,7 +76,7 @@ def visualize_detections(model, dataset, bounding_box_format):
 def test_training():
     dataset = preprocess()
     train_ds, val_ds, test_data = splitting_data(dataset)
-    yolo, hitory = train(dataset)
+    yolo, test_data = train(dataset)
 
     visualize_detections(yolo, dataset=val_ds, bounding_box_format=BOX_FORMAT)
 

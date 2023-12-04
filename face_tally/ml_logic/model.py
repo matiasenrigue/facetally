@@ -10,7 +10,7 @@ def get_yolo() -> models.YOLOV8Backbone:
     Need to define the size of the backbone
     """
     # Size options: xs, s, m, l, xl
-    backbone_name = "yolo_v8_" + BACKBONE_SIZE + "_backbone_coco"
+    backbone_name = "yolo_v8_" + str(BACKBONE_SIZE) + "_backbone_coco"
 
     yolo = models.YOLOV8Detector(
         num_classes=len(class_mapping),
@@ -18,6 +18,7 @@ def get_yolo() -> models.YOLOV8Backbone:
         backbone=models.YOLOV8Backbone.from_preset(backbone_name),
         fpn_depth=1,
     )
+
     return yolo
 
 
@@ -36,15 +37,27 @@ def download_best_model_from_GCP(
     # Get the bucket
     bucket = storage_client.bucket(bucket_name)
 
+    # Check if there is any existing blob in the folder. Return None if not
+    # Count the number of blobs in the folder, excluding the folder placeholder
+    blobs = bucket.list_blobs(prefix=folder_path)
+    blob_count = sum(1 for blob in blobs if blob.name != folder_path)
+    if blob_count == 0:
+        return None, -1
+
     # List objects in the specified folder path
     blobs = bucket.list_blobs(prefix=folder_path)
 
     # Sort all file in numerical order from smaller to bigger
+    # Expected file name format: models/yolo_MaP_weights.h5 (where Map is a float)
     all_files = [each.name for each in blobs if each.name != "models/"]
     all_files.sort(key=lambda x: float(x.split("_")[1]))
 
     # Select the best model (higher MaP)
     best_blob = all_files[-1]
+    print("Using best model for tarining: ", best_blob)
+
+    # Extract best Map
+    MaP = float(best_blob.split("_")[1])
 
     # Download the model
     blob = bucket.blob(best_blob)
@@ -57,9 +70,10 @@ def download_best_model_from_GCP(
     blob.download_to_filename(save_path)
 
     # Load saved model
-    model = models.load_model(save_path)
+    model = get_yolo()
+    model.load_weights(save_path)
 
-    return model
+    return model, MaP
 
 
 def get_model():
@@ -68,16 +82,16 @@ def get_model():
     """
     bucket_model_folder = "models/"
 
-    model = download_best_model_from_GCP(
+    model, MaP = download_best_model_from_GCP(
         BUCKET_NAME,
         bucket_model_folder,
     )
     if model is None:
         # Load model from backbone trained with coco
-        print("Loading model from backbone")
+        print("Loading model from backbone, size: ", str(BACKBONE_SIZE))
         model = get_yolo()
 
-    return model
+    return model, MaP
 
 
 def compile_model(model: models.YOLOV8Detector) -> models.YOLOV8Detector:

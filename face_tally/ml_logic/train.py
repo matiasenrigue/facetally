@@ -62,8 +62,11 @@ def splitting_data(data: tf.data.Dataset):
 
     train_data = data.take(train_idx)
     val_data = data.skip(train_idx).take(validation_idx)
-    # test_data = data.skip(train_idx + validation_idx)
-    test_data = 0
+    test_data = data.skip(train_idx + validation_idx)
+
+    # Only for test
+    train_data = train_data.take(4)
+    val_data = val_data.take(4)
 
     train_ds = train_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.shuffle(BATCH_SIZE * 4)
@@ -75,12 +78,6 @@ def splitting_data(data: tf.data.Dataset):
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
-    # Convert to tuple
-    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
-    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
-    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
-
     return train_ds, val_ds, test_data
 
 
@@ -88,9 +85,14 @@ def fit_model(train_ds, val_ds):
     """
     Fitting model on train_ds, using val_ds as validation data
     """
+    # Extract the input from the preproc dictionary, to tuple
+    train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
+    val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
+    val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     # Get best model from google cloud
-    yolo = get_model()
+    yolo, best_MaP = get_model()
 
     # Compile the model
     yolo = compile_model(yolo)
@@ -104,8 +106,7 @@ def fit_model(train_ds, val_ds):
         callbacks=[
             EvaluateCOCOMetricsCallback(
                 val_ds,
-                "model.h5",
-                GOOGLE_APPLICATION_CREDENTIALS,
+                best_MaP,
             )
         ],
         verbose=1,
