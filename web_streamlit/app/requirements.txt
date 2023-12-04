@@ -1,0 +1,23 @@
+pillow-heif
+Pillow
+numpy
+
+# packaging
+pip>=9
+setuptools>=26
+twine
+wheel>=0.29
+
+# data science
+six
+
+# img
+pillow
+
+# web
+streamlit
+requests
+python-dotenv
+
+opencv-python-headless==4.6.0.66
+datetime
