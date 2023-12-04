@@ -92,7 +92,7 @@ def fit_model(train_ds, val_ds):
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     # Get best model from google cloud
-    yolo = get_model()
+    yolo, best_MaP = get_model()
 
     # Compile the model
     yolo = compile_model(yolo)
@@ -106,8 +106,7 @@ def fit_model(train_ds, val_ds):
         callbacks=[
             EvaluateCOCOMetricsCallback(
                 val_ds,
-                "model.h5",
-                GOOGLE_APPLICATION_CREDENTIALS,
+                best_MaP,
             )
         ],
         verbose=1,

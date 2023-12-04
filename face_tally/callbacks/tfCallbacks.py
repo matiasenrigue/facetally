@@ -4,9 +4,9 @@ from google.cloud import storage
 from face_tally.params import *
 
 
-def save_model(model_path, google_auth_credentials) -> None:
+def save_model_GCP(model_path) -> None:
     model_filename = model_path.split("/")[-1]
-    client = storage.Client(credentials=google_auth_credentials)
+    client = storage.Client()
     bucket = client.bucket(BUCKET_NAME)
     blob = bucket.blob(f"models/{model_filename}")
     blob.upload_from_filename(model_path)
@@ -21,27 +21,24 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
     Model evaluation with COCO Metric Callback
     """
 
-    def __init__(self, data, save_path, google_auth_credentials):
+    def __init__(self, data, best_MaP):
         super().__init__()
         self.data = data
         self.metrics = keras_cv.metrics.BoxCOCOMetrics(
             bounding_box_format=BOX_FORMAT,
             evaluate_freq=1e9,
         )
-        self.save_path = save_path
-        self.best_map = -1.0
-        self.google_auth_credentials = google_auth_credentials
+        self.best_map = best_MaP
 
     def on_epoch_end(self, epoch, logs):
         self.metrics.reset_state()
         for batch in self.data:
-            images = batch["images"]
-            bounding_boxes = batch["bounding_boxes"]
+            images = batch[0]
+            bounding_boxes = batch[1]
 
             # Extract "boxes" and "classes" from bounding_boxes
             classes = bounding_boxes["classes"]
             boxes = bounding_boxes["boxes"]
-
             y_pred = self.model.predict(images, verbose=0)
 
             # Convert classes and bounding_boxes to a dictionary
@@ -49,16 +46,19 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
 
             self.metrics.update_state(y_true, y_pred)
 
-        metrics = self.metrics.result(force=True)
+        metrics = self.metrics.result()
+
         logs.update(metrics)
 
         current_map = metrics["MaP"]
 
         if current_map > self.best_map:
             self.best_map = current_map
-            self.model.save(self.save_path)
-            from_path = f"{self.save_path}_{current_map}_model_weights.h5"
+            model_path = os.path.join(LOCAL_DATA_PATH, "models")
+            os.makedirs(model_path, exist_ok=True)
+
+            from_path = os.path.join(model_path, f"yolo_{current_map}_weights.h5")
             self.model.save_weights(from_path)
-            save_model(from_path, self.google_auth_credentials)
+            save_model_GCP(from_path)
 
         return logs
