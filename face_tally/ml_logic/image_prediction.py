@@ -33,9 +33,12 @@ def predict_bounding_boxes(image, model) -> dict:
     bound_boxes = []
 
     for box in result.boxes:
-        cordenadas_xywh = box.xyxy[0].tolist()
-
         predicted_class = box.cls[0]
+
+        if predicted_class.item() != 0.0:
+            continue
+
+        cordenadas_xywh = box.xyxy[0].tolist()
         class_name = result.names[predicted_class.item()]
 
         confidence = round(box.conf[0].item(), 2)
