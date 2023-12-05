@@ -85,12 +85,16 @@ async def get_model():
     """
     Get yolo model from GCP or from backbone if there is no model available
     """
-    bucket_model_folder = "models/"
 
-    model, MaP = await download_best_model_from_GCP(
-        BUCKET_NAME,
-        bucket_model_folder,
-    )
+    if MODEL_SOURCE == "GCP":
+        bucket_model_folder = "models/"
+        model, MaP = await download_best_model_from_GCP(
+            BUCKET_NAME,
+            bucket_model_folder,
+        )
+    elif MODEL_SOURCE == "GCP":
+        pass
+
     if model is None:
         # Load model from backbone trained with coco
         print("Loading model from backbone, size: ", str(BACKBONE_SIZE))
