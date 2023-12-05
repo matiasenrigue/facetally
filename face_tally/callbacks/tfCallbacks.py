@@ -5,15 +5,12 @@ from face_tally.params import *
 from face_tally.credentials import create_google_cloud_client
 
 
-async def save_model_GCP(model_path) -> None:
+def save_model_GCP(model_path, client) -> None:
     """
     It uploads the local model weights to Google Cloud Storage
     """
     # Filter the model name from the path
     model_filename = model_path.split("/")[-1]
-
-    # Connect to GCP
-    client = await create_google_cloud_client()
     bucket = client.bucket(BUCKET_NAME)
 
     # Save it in bucket under this path
@@ -32,7 +29,7 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
     Model evaluation with COCO Metric Callback
     """
 
-    def __init__(self, data, best_MaP):
+    def __init__(self, data, best_MaP, client):
         super().__init__()
         self.data = data
         self.metrics = keras_cv.metrics.BoxCOCOMetrics(
@@ -40,8 +37,9 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
             evaluate_freq=1e9,
         )
         self.best_map = best_MaP
+        self.client = client
 
-    async def on_epoch_end(self, epoch, logs):
+    def on_epoch_end(self, epoch, logs):
         self.metrics.reset_state()
         for batch in self.data:
             images = batch[0]
@@ -70,6 +68,6 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
 
             from_path = os.path.join(model_path, f"yolo_{current_map}_weights.h5")
             self.model.save_weights(from_path)
-            await save_model_GCP(from_path)
+            save_model_GCP(from_path, self.client)
 
         return logs

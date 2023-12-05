@@ -87,6 +87,8 @@ async def fit_model(train_ds, val_ds):
     Fitting model on train_ds, using val_ds as validation data
     """
     # Extract the input from the preproc dictionary, to tuple
+    client = await create_google_cloud_client()
+
     train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
     val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
@@ -108,6 +110,7 @@ async def fit_model(train_ds, val_ds):
             EvaluateCOCOMetricsCallback(
                 val_ds,
                 best_MaP,
+                client
             )
         ],
         verbose=1,
