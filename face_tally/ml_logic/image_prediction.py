@@ -82,8 +82,14 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
         # Draw rectangle on the image
         cv2.rectangle(
             opencv_image,
-            (coordinates[0], coordinates[1]),
-            (coordinates[2], coordinates[3]),
+            (
+                coordinates[0],
+                coordinates[1],
+            ),  # represents the top left corner of rectangle (x, y)
+            (
+                coordinates[2],
+                coordinates[3],
+            ),  # represents the bottom right corner of rectangle (x, y)
             color,
             thickness,
         )
@@ -115,6 +121,37 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
 
     # Display or save the annotated image as needed
     return annotated_image
+
+
+def crop_images(original_image_array: np.array, bound_boxes: dict) -> np.array:
+    """
+    Takes both:
+    - The original image array
+    - The result from the bounding boxes
+
+    And returns an image with both elements in array format
+    """
+
+    faces_list = []
+
+    # Create an OpenCV image from the numeric array
+    opencv_image = cv2.cvtColor(original_image_array, cv2.COLOR_RGB2BGR)
+
+    # Annotate bounding boxes on the OpenCV image
+    for box_info in bound_boxes:
+        coordinates = box_info["Coordinates"]
+
+        face = opencv_image[
+            int(coordinates[1]) : int(coordinates[3]),  # (y1, y2)
+            int(coordinates[0]) : int(coordinates[2]),  # (x1, x2)
+        ]
+
+        face_colored = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+
+        faces_list.append(face_colored)
+
+    # Display or save the annotated image as needed
+    return faces_list
 
 
 def save_image(image_created, file_save_name=None) -> None:

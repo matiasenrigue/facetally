@@ -18,3 +18,5 @@ streamlit
 tensorflow
 ultralytics
 uvicorn
+deepface
+rembg
