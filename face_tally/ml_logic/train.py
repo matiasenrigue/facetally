@@ -5,6 +5,7 @@ from face_tally.callbacks.tfCallbacks import EvaluateCOCOMetricsCallback
 import tensorflow as tf
 from tensorflow import keras
 from keras_cv import layers
+from face_tally.credentials import create_google_cloud_client
 
 
 def get_augmenter(bbox_format=BOX_FORMAT):
@@ -81,18 +82,20 @@ def splitting_data(data: tf.data.Dataset):
     return train_ds, val_ds, test_data
 
 
-def fit_model(train_ds, val_ds):
+async def fit_model(train_ds, val_ds):
     """
     Fitting model on train_ds, using val_ds as validation data
     """
     # Extract the input from the preproc dictionary, to tuple
+    client = await create_google_cloud_client()
+
     train_ds = train_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     train_ds = train_ds.prefetch(tf.data.AUTOTUNE)
     val_ds = val_ds.map(dict_to_tuple, num_parallel_calls=tf.data.AUTOTUNE)
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     # Get best model from google cloud
-    yolo, best_MaP = get_model()
+    yolo, best_MaP = await get_model()
 
     # Compile the model
     yolo = compile_model(yolo)
@@ -107,6 +110,7 @@ def fit_model(train_ds, val_ds):
             EvaluateCOCOMetricsCallback(
                 val_ds,
                 best_MaP,
+                client
             )
         ],
         verbose=1,
