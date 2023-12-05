@@ -1,5 +1,6 @@
 asyncio
 colorama
+comet_ml
 google-cloud-storage
 DateTime
 keras-cv

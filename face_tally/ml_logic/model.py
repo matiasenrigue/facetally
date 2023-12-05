@@ -1,8 +1,9 @@
 import tensorflow as tf
 from keras_cv import models
 from face_tally.params import *
-from google.cloud import storage
 from face_tally.credentials import create_google_cloud_client
+import comet_ml
+from comet_ml import API
 
 
 def get_yolo() -> models.YOLOV8Backbone:
