@@ -2,6 +2,7 @@ import tensorflow as tf
 from keras_cv import models
 from face_tally.params import *
 from google.cloud import storage
+from face_tally.credentials import create_google_cloud_client
 
 
 def get_yolo() -> models.YOLOV8Backbone:
@@ -22,7 +23,7 @@ def get_yolo() -> models.YOLOV8Backbone:
     return yolo
 
 
-def download_best_model_from_GCP(
+async def download_best_model_from_GCP(
     bucket_name: str,
     folder_path: str,
 ) -> bool:
@@ -32,7 +33,7 @@ def download_best_model_from_GCP(
     Returns True if something is downloaded or updated
     """
     # Initialize the Cloud Storage client
-    storage_client = storage.Client()
+    storage_client = await create_google_cloud_client()
 
     # Get the bucket
     bucket = storage_client.bucket(bucket_name)
@@ -79,13 +80,13 @@ def download_best_model_from_GCP(
     return model, MaP
 
 
-def get_model():
+async def get_model():
     """
     Get yolo model from GCP or from backbone if there is no model available
     """
     bucket_model_folder = "models/"
 
-    model, MaP = download_best_model_from_GCP(
+    model, MaP = await download_best_model_from_GCP(
         BUCKET_NAME,
         bucket_model_folder,
     )

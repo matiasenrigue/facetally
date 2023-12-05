@@ -1,3 +1,4 @@
+asyncio
 colorama
 google-cloud-storage
 DateTime
@@ -5,8 +6,9 @@ keras-cv
 fastapi
 matplotlib
 numpy
-pandas
 opencv-python
+pandas
+prefect-gcp
 Pillow
 pillow-heif
 python-multipart
