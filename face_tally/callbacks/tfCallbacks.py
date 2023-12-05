@@ -61,12 +61,14 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
 
         current_map = metrics["MaP"]
 
-        if current_map > self.best_map:
+        if current_map >= self.best_map:
             self.best_map = current_map
             model_path = os.path.join(LOCAL_DATA_PATH, "models")
             os.makedirs(model_path, exist_ok=True)
 
-            from_path = os.path.join(model_path, f"yolo_{current_map}_weights.h5")
+            from_path = os.path.join(
+                model_path, f"yolo_{round(current_map, 2)}_weights.h5"
+            )
             self.model.save_weights(from_path)
             save_model_GCP(from_path, self.client)
 
