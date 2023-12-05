@@ -15,5 +15,4 @@ RUN make install
 
 # Additional commands
 RUN make create_folders
-COPY google.json google.json
 CMD python face_tally/interface/main.py

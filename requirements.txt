@@ -1,5 +1,6 @@
 asyncio
 colorama
+comet_ml
 google-cloud-storage
 DateTime
 keras-cv
@@ -10,7 +11,6 @@ opencv-python
 pandas
 prefect-gcp
 Pillow
-pillow-heif
 python-multipart
 requests
 starlette

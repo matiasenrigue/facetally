@@ -67,7 +67,7 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
             os.makedirs(model_path, exist_ok=True)
 
             from_path = os.path.join(
-                model_path, f"yolo_{round(current_map, 2)}_weights.h5"
+                model_path, f"yolo_{round(current_map.numpy(), 2)}_weights.h5"
             )
             self.model.save_weights(from_path)
             save_model_GCP(from_path, self.client)
