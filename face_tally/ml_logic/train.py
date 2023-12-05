@@ -95,7 +95,7 @@ async def fit_model(train_ds, val_ds):
     val_ds = val_ds.prefetch(tf.data.AUTOTUNE)
 
     # Get best model from google cloud
-    yolo, best_MaP = await get_model()
+    yolo, best_MaP = await get_model_for_training()
 
     # Compile the model
     yolo = compile_model(yolo)
@@ -106,13 +106,7 @@ async def fit_model(train_ds, val_ds):
         train_ds,
         validation_data=val_ds,
         epochs=EPOCH,
-        callbacks=[
-            EvaluateCOCOMetricsCallback(
-                val_ds,
-                best_MaP,
-                client
-            )
-        ],
+        callbacks=[EvaluateCOCOMetricsCallback(val_ds, best_MaP, client)],
         verbose=1,
     )
 
