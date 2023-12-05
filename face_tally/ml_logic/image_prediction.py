@@ -33,9 +33,12 @@ def predict_bounding_boxes(image, model) -> dict:
     bound_boxes = []
 
     for box in result.boxes:
-        cordenadas_xywh = box.xyxy[0].tolist()
-
         predicted_class = box.cls[0]
+
+        if predicted_class.item() != 0.0:
+            continue
+
+        cordenadas_xywh = box.xyxy[0].tolist()
         class_name = result.names[predicted_class.item()]
 
         confidence = round(box.conf[0].item(), 2)
@@ -70,8 +73,8 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
         probability = box_info["Probability"]
 
         coordinates = box_info["Coordinates"]
-        color = (135, 206, 250)  # Color for the bounding box
-        thickness = 5
+        color = (90, 255, 127)  # Color for the bounding box
+        thickness = 2
 
         # Convert float coordinates to integers
         coordinates = [int(coord) for coord in coordinates]
@@ -86,15 +89,24 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
         )
 
         # Annotate with object type and probability
-        label = f"{object_type} ({probability:.2f})"
+        label = f"{object_type}"
+
+        cv2.rectangle(
+            opencv_image,
+            (coordinates[0], coordinates[1] - 5),
+            (coordinates[0] + 80, coordinates[1] - 25),
+            (76, 166, 96),
+            -1,  # thickness = -1 to fill the entire thing
+        )
+
         cv2.putText(
             opencv_image,
             label,
             (coordinates[0], coordinates[1] - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
-            1.5,
+            0.75,
             (255, 255, 255),
-            4,
+            2,
         )
         # cv2.FONT_HERSHEY_SIMPLEX, size, color, width
 
