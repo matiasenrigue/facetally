@@ -6,6 +6,7 @@ import tensorflow as tf
 from google.cloud import storage
 from face_tally.credentials import create_google_cloud_client
 import asyncio
+import zipfile
 
 
 def load_annotations_csv() -> pd.DataFrame:
@@ -28,7 +29,7 @@ def load_image(image_path: str) -> tf.Variable:
     return image
 
 
-async def download_images_from_GCP(
+async def download_data_from_GCP(
     bucket_name: str, folder_path: str, destination_folder: str, overwrite=False
 ) -> bool:
     """
@@ -63,6 +64,24 @@ async def download_images_from_GCP(
     return True if count > 0 else False
 
 
+def unzip_file(zip_path: str, destination_folder: str) -> None:
+    """
+    Unzips the zip under zip_path and saves the content into destination_folder
+    """
+    print("Unzipping images...")
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        for file_info in zip_ref.infolist():
+            file_path = os.path.join(destination_folder, file_info.filename)
+
+            # Check if the file already exists, and if so, overwrite it
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+            zip_ref.extract(file_info, destination_folder)
+
+    return None
+
+
 async def update_local_raw_data_from_GCP() -> None:
     """
     Updates the local raw data with the data in Google Cloud Storage
@@ -70,17 +89,20 @@ async def update_local_raw_data_from_GCP() -> None:
 
     print("Updating local raw data from Google Cloud Storage...")
 
-    # Images path
-    local_image_folder = os.path.join(LOCAL_DATA_PATH, "image_data")
-
     # Bucket paths
-    bucket_image_folder = "image_data/"  # Destination folder in the bucket
+    image_data_zip_name = "image_data.zip"
     csv_name = "bbox_train.csv"
 
-    changes_csv = await download_images_from_GCP(BUCKET_NAME, csv_name, LOCAL_DATA_PATH)
-    changes_images = await download_images_from_GCP(
-        BUCKET_NAME, bucket_image_folder, local_image_folder
+    # Download the data
+    changes_csv = await download_data_from_GCP(BUCKET_NAME, csv_name, LOCAL_DATA_PATH)
+    changes_images = await download_data_from_GCP(
+        BUCKET_NAME, image_data_zip_name, LOCAL_DATA_PATH
     )
+
+    # Unzip the data
+    zip_path = os.path.join(LOCAL_DATA_PATH, image_data_zip_name)
+    unzip_file(zip_path, LOCAL_DATA_PATH)
+
     if not (changes_csv or changes_images):
         print("Process finished, local files were already up to date")
     else:
