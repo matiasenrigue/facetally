@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+from keras_cv import bounding_box
 import numpy as np
 import datetime
 from PIL import Image
@@ -15,8 +16,12 @@ This script has functions to be able to predict where object are in a picture:
 """
 
 
-def predict_bounding_boxes(image, model) -> dict:
+def predict_bounding_boxes(image, model, model_source) -> dict:
     """
+    Input:
+        - Image in bytes
+        - model from Ultralytics (Comet) or from KerasCV (GCP)
+        - model_source: COMET or GCP
     Gets the bounding boxes that say where objects are located in an images, returns:
     - class of the object
     - position in the image
@@ -26,6 +31,9 @@ def predict_bounding_boxes(image, model) -> dict:
     """
 
     results = model.predict(image)
+
+    if model_source == "GCP":
+        results = bounding_box.to_ragged(results)
 
     result = results[0]
     box = result.boxes[0]

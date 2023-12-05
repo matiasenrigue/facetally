@@ -1,12 +1,11 @@
 from face_tally.ml_logic.image_prediction import predict_bounding_boxes
-from ultralytics import YOLO
+from face_tally.ml_logic.model import get_model
+from face_tally.params import *
+
 from PIL import Image
-
-from pillow_heif import register_heif_opener
 from fastapi import FastAPI, UploadFile, File
-
 from io import BytesIO
-
+import asyncio
 
 """
 This script receives an API call:
@@ -17,9 +16,16 @@ And outputs a prediction made with the Model, in the form of bounding boxes
 
 
 app = FastAPI()
-app.state.model = YOLO("yolov8n.pt")
 
-register_heif_opener()
+
+async def load_model():
+    model, _ = await get_model(MODEL_SOURCE)
+    return model
+
+
+@app.on_event("startup")
+async def startup_event():
+    app.state.model = await load_model()
 
 
 @app.get("/ok")
@@ -38,7 +44,7 @@ async def receive_image(img: UploadFile = File(...)):
     model = app.state.model
 
     # Process the image using the YOLO model
-    boundsboxes = predict_bounding_boxes(image, model)
+    boundsboxes = predict_bounding_boxes(image, model, MODEL_SOURCE)
 
     # Convert boundsboxes to a JSON-serializable format
     return {"boundsboxes": boundsboxes}
