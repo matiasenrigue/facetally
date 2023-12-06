@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y gcc python3-dev make
 # Copy necessary files
 COPY face_tally face_tally/
 COPY Makefile Makefile
-COPY requirements_training_kerascv.txt requirements_training_kerascv.txt
+COPY requirements_training_kerascv.txt requirements.txt
 COPY setup.py setup.py
 
 # Upgrade pip and install dependencies
