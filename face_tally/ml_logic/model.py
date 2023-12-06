@@ -5,6 +5,8 @@ from face_tally.credentials import create_google_cloud_client
 import comet_ml
 from comet_ml import API
 from ultralytics import YOLO
+from keras_cv.metrics import BoxCOCOMetrics
+from face_tally.ml_logic.train import *
 
 
 def get_yolo() -> models.YOLOV8Backbone:
@@ -172,3 +174,51 @@ def compile_model(model: models.YOLOV8Detector) -> models.YOLOV8Detector:
         optimizer=optimizer, classification_loss="binary_crossentropy", box_loss="ciou"
     )
     return model
+
+
+# def evaluate_model():
+#     """
+#     Get the model from KerasCV or Ultralytics
+#     Evaluate it following the corresponding docs, using test data
+#     Output MaP
+#     """
+#     model, _ = get_model(source=MODEL_SOURCE)
+
+
+async def evaluate_model(test_ds):
+    """
+    Evaluate the provided YOLO model on the given test data.
+    """
+    # Get the model
+    model, _ = await get_model(source=MODEL_SOURCE)
+    map_score = -1
+
+    if MODEL_SOURCE == "GCP":
+        # Initialize COCO metrics
+        coco_metrics = BoxCOCOMetrics(bounding_box_format=BOX_FORMAT)
+
+        # Evaluate each image in the test data
+        for batch in test_ds:
+            images, bounding_boxes = batch
+            classes = bounding_boxes["classes"]
+            boxes = bounding_boxes["boxes"]
+
+            # Make predictions
+            y_pred = model.predict(images)
+
+            # Prepare ground truth data (y_true)
+            y_true = {"boxes": boxes, "classes": classes}
+
+            # Update metrics
+            coco_metrics.update_state(y_true, y_pred)
+
+        # Calculate the final result
+        results = coco_metrics.result()
+        map_score = results["MaP"]  # Make sure 'MaP' is a key in the results dictionary
+
+    elif MODEL_SOURCE == "COMET":
+        pass
+
+    print(f"Mean Average Precision (MaP) of the model on test data: {map_score}")
+
+    return map_score
