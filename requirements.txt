@@ -18,3 +18,5 @@ streamlit
 tensorflow==2.14.0
 ultralytics
 uvicorn
+deepface
+rembg
