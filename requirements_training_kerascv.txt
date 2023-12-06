@@ -12,3 +12,4 @@ Pillow
 python-multipart
 starlette
 tensorflow==2.14.0
+ultralytics
