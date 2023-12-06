@@ -1,6 +1,7 @@
 asyncio
 colorama
 comet_ml
+deepface
 google-cloud-storage
 DateTime
 keras-cv
@@ -13,6 +14,7 @@ prefect-gcp
 Pillow
 python-multipart
 requests
+rembg
 starlette
 streamlit
 tensorflow==2.14.0
