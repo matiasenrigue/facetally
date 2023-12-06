@@ -27,5 +27,5 @@ def callback(frame):
 webrtc_streamer(
     key="facetally",
     video_frame_callback=callback,
-    # rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
 )
