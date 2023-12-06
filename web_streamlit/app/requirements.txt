@@ -1,4 +1,3 @@
-pillow-heif
 Pillow
 numpy
 # img

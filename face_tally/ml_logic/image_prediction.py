@@ -3,7 +3,6 @@ from keras_cv import bounding_box
 import numpy as np
 import datetime
 from PIL import Image
-from pillow_heif import register_heif_opener
 import cv2
 
 
@@ -154,8 +153,12 @@ def crop_image_faces(original_image_array: np.array, bound_box: dict) -> np.arra
     # Aplica las extensiones a las coordenadas, asegurándote de no exceder los límites de la imagen
     x1 = int(max(0, coordinates[0] - left_extension))
     y1 = int(max(0, coordinates[1] - up_extension))
-    x2 = int(min(opencv_image.shape[1], coordinates[0] + coordinates[2] + right_extension))
-    y2 = int(min(opencv_image.shape[0], coordinates[1] + coordinates[3] + down_extension))
+    x2 = int(
+        min(opencv_image.shape[1], coordinates[0] + coordinates[2] + right_extension)
+    )
+    y2 = int(
+        min(opencv_image.shape[0], coordinates[1] + coordinates[3] + down_extension)
+    )
 
     # Recorta la región de interés de la imagen extendida
     face = opencv_image[y1:y2, x1:x2]
@@ -201,8 +204,6 @@ def full_process(original_image, model, saving_name=None) -> None:
 if __name__ == "__main__":
     model = YOLO("yolov8n.pt")
     image_file_path = "trial_images/IMG_4194.HEIC"
-
-    register_heif_opener()  # In case if its an iphone picture
 
     image = Image.open(image_file_path)
     array_image = np.array(image)
