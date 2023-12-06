@@ -3,6 +3,7 @@ from face_tally.ml_logic.preprocessing import *
 from face_tally.ml_logic.train import splitting_data
 from face_tally.ml_logic.model import *
 import asyncio
+from keras_cv.metrics import BoxCOCOMetrics
 
 
 async def evaluate_model(test_ds, source):
