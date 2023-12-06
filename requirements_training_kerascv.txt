@@ -1,0 +1,14 @@
+asyncio
+colorama
+comet_ml
+google-cloud-storage
+DateTime
+keras-cv
+matplotlib
+numpy
+pandas
+prefect-gcp
+Pillow
+python-multipart
+starlette
+tensorflow==2.14.0
