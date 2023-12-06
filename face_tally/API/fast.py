@@ -5,7 +5,6 @@ from face_tally.params import *
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
 from io import BytesIO
-import asyncio
 
 """
 This script receives an API call:

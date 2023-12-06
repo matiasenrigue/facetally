@@ -3,7 +3,6 @@ from keras_cv import bounding_box
 import numpy as np
 import datetime
 from PIL import Image
-from pillow_heif import register_heif_opener
 import cv2
 
 
@@ -16,7 +15,7 @@ This script has functions to be able to predict where object are in a picture:
 """
 
 
-def predict_bounding_boxes(image, model, model_source) -> dict:
+def predict_bounding_boxes(image, model, model_source="COMET") -> dict:
     """
     Input:
         - Image in bytes
@@ -90,8 +89,14 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
         # Draw rectangle on the image
         cv2.rectangle(
             opencv_image,
-            (coordinates[0], coordinates[1]),
-            (coordinates[2], coordinates[3]),
+            (
+                coordinates[0],
+                coordinates[1],
+            ),  # represents the top left corner of rectangle (x, y)
+            (
+                coordinates[2],
+                coordinates[3],
+            ),  # represents the bottom right corner of rectangle (x, y)
             color,
             thickness,
         )
@@ -123,6 +128,45 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
 
     # Display or save the annotated image as needed
     return annotated_image
+
+
+def crop_image_faces(original_image_array: np.array, bound_box: dict) -> np.array:
+    """
+    Takes both:
+    - The original image array
+    - The result one bounding box to see where to cut
+
+    The array of a cropped image
+    """
+
+    # Create an OpenCV image from the numeric array
+    opencv_image = cv2.cvtColor(original_image_array, cv2.COLOR_RGB2BGR)
+
+    coordinates = bound_box[0]["Coordinates"]
+
+    # Calcula las extensiones en cada dirección
+    up_extension = int(coordinates[1] * 0.15)
+    down_extension = int(coordinates[3] * 0.25)
+    left_extension = int(coordinates[0] * 0.25)
+    right_extension = int(coordinates[2] * 0.25)
+
+    # Aplica las extensiones a las coordenadas, asegurándote de no exceder los límites de la imagen
+    x1 = int(max(0, coordinates[0] - left_extension))
+    y1 = int(max(0, coordinates[1] - up_extension))
+    x2 = int(
+        min(opencv_image.shape[1], coordinates[0] + coordinates[2] + right_extension)
+    )
+    y2 = int(
+        min(opencv_image.shape[0], coordinates[1] + coordinates[3] + down_extension)
+    )
+
+    # Recorta la región de interés de la imagen extendida
+    face = opencv_image[y1:y2, x1:x2]
+
+    face_colored = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+
+    # Display or save the annotated image as needed
+    return face_colored
 
 
 def save_image(image_created, file_save_name=None) -> None:
@@ -160,8 +204,6 @@ def full_process(original_image, model, saving_name=None) -> None:
 if __name__ == "__main__":
     model = YOLO("yolov8n.pt")
     image_file_path = "trial_images/IMG_4194.HEIC"
-
-    register_heif_opener()  # In case if its an iphone picture
 
     image = Image.open(image_file_path)
     array_image = np.array(image)

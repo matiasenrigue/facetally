@@ -1,4 +1,3 @@
-pillow-heif
 Pillow
 numpy
 # img
@@ -11,3 +10,6 @@ python-dotenv
 
 opencv-python-headless==4.6.0.66
 datetime
+
+# Live video
+streamlit-webrtc
