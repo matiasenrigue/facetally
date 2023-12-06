@@ -130,6 +130,45 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
     return annotated_image
 
 
+def crop_image(original_image_array: np.array, biggest_bound_box: dict) -> np.array:
+    """
+    Takes both:
+    - The original image array
+    - The result from the bounding boxes
+
+    And returns an image with both elements in array format
+    """
+
+    faces_list = []
+
+    # Create an OpenCV image from the numeric array
+    opencv_image = cv2.cvtColor(original_image_array, cv2.COLOR_RGB2BGR)
+    print(opencv_image.shape)
+
+    coordinates = biggest_bound_box[0]["Coordinates"]
+
+    # Annotate bounding boxes on the OpenCV image
+    height_face = (coordinates[3]-coordinates[1])
+    lenght_face = (coordinates[2]-coordinates[0])
+
+    x1 = int(max(0, coordinates[0] - lenght_face * 0.75))
+    x2 = int(min(opencv_image.shape[1], coordinates[2] + lenght_face * 0.75))
+
+    y1 = int(max(0, coordinates[1] - height_face * 0.50))
+    y2 = int(min(opencv_image.shape[0], coordinates[3] + height_face * 1.35))
+
+    face = opencv_image[ y1: y2, x1: x2]
+    # face = opencv_image[int(coordinates[1]):int(coordinates[3]),
+    #                     int(coordinates[0]):int(coordinates[2])]
+
+    face_colored = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
+
+    return face_colored
+
+
+
+
+
 def crop_image_faces(original_image_array: np.array, bound_box: dict) -> np.array:
     """
     Takes both:
