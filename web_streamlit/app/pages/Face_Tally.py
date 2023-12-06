@@ -3,7 +3,6 @@ import requests
 from PIL import Image
 import numpy as np
 from image_prediction import create_image
-from pillow_heif import register_heif_opener
 import cv2
 import numpy as np
 
@@ -17,9 +16,6 @@ st.set_page_config(
 
 # Large, stylized title
 st.title("Let's go live! 📸")
-
-# Create a native Streamlit file upload input
-register_heif_opener()
 
 # img_file_buffer = st.file_uploader("Test Face Tally on your best pics")
 img_file_buffer = st.camera_input("Test FaceTally on your best pics")

@@ -15,6 +15,7 @@ python-multipart
 requests
 starlette
 streamlit
+streamlit-webrtc
 tensorflow==2.14.0
 ultralytics
 uvicorn
