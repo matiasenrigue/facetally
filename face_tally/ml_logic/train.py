@@ -79,7 +79,12 @@ def splitting_data(data: tf.data.Dataset):
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
-    return train_ds, val_ds, test_data
+    test_ds = test_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
+    test_ds = test_ds.shuffle(BATCH_SIZE * 4)
+    test_ds = test_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+    test_ds = test_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+
+    return train_ds, val_ds, test_ds
 
 
 async def fit_model(train_ds, val_ds):
