@@ -5,6 +5,45 @@ from face_tally.ml_logic.model import *
 import asyncio
 
 
+async def evaluate_model(test_ds, source):
+    """
+    Evaluate the provided YOLO model on the given test data.
+    """
+    # Get the model
+    model, _ = await get_model(source=source)
+    map_score = -1
+
+    if source == "GCP":
+        # Initialize COCO metrics
+        coco_metrics = BoxCOCOMetrics(bounding_box_format=BOX_FORMAT, evaluate_freq=1)
+
+        # Evaluate each image in the test data
+        for batch in test_ds:
+            images, bounding_boxes = batch
+            classes = bounding_boxes["classes"]
+            boxes = bounding_boxes["boxes"]
+
+            # Make predictions
+            y_pred = model.predict(images)
+
+            # Prepare ground truth data (y_true)
+            y_true = {"boxes": boxes, "classes": classes}
+
+            # Update metrics
+            coco_metrics.update_state(y_true, y_pred)
+
+        # Calculate the final result
+        results = coco_metrics.result()
+        map_score = results["MaP"]  # Make sure 'MaP' is a key in the results dictionary
+
+    elif source == "COMET":
+        pass
+
+    print(f"Mean Average Precision (MaP) of the model on test data: {map_score}")
+
+    return map_score
+
+
 async def evaluate():
     """
     - Evaluate the trained model on the test data set
@@ -29,7 +68,7 @@ async def evaluate():
 
     # Split dataset to train, test, val
     _, _, test_data = splitting_data(dataset)
-    map_score = await evaluate_model(test_data)
+    map_score = await evaluate_model(test_data, MODEL_SOURCE)
 
     print(f"Model evaluation completed. MaP: {map_score}")
 
