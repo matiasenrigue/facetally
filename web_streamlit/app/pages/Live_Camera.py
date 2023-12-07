@@ -2,7 +2,10 @@ from streamlit_webrtc import webrtc_streamer
 import av
 import cv2
 import requests
-from image_prediction import create_image
+import streamlit as st
+from image_prediction import *
+
+number_faces = NumberFaces()
 
 
 def callback(frame):
@@ -18,14 +21,23 @@ def callback(frame):
     ).json()["boundsboxes"]
 
     created_image = create_image(img, res)  # Assuming create_image is defined somewhere
+    number_faces.change_value(len(res))
 
     return av.VideoFrame.from_ndarray(created_image, format=format)
 
 
-# Live camera streamlit object
-# rtc_configuration is needed to run in the cloud
-webrtc_streamer(
-    key="facetally",
-    video_frame_callback=callback,
-    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
-)
+def main():
+    st.markdown(f"Tally: {number_faces.get_value()} face")
+    st.write("Hello, world")
+
+    # Live camera streamlit object
+    # rtc_configuration is needed to run in the cloud
+    webrtc_streamer(
+        key="facetally",
+        video_frame_callback=callback,
+        # rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    )
+
+
+if __name__ == "__main__":
+    main()
