@@ -32,35 +32,39 @@ def predict_bounding_boxes(image, model, model_source="COMET") -> dict:
     Does that by using our models prediction
     """
 
-    results = model.predict(image)
-
-    if model_source == "GCP":
-        results = bounding_box.to_ragged(results)
-
-    result = results[0]
-
     bound_boxes = []
-    if len(result.boxes) > 0:
-        box = result.boxes[0]
 
-        for box in result.boxes:
-            predicted_class = box.cls[0]
+    try:
+        results = model.predict(image)
 
-            if predicted_class.item() != 0.0:
-                continue
+        if model_source == "GCP":
+            results = bounding_box.to_ragged(results)
 
-            cordenadas_xywh = box.xyxy[0].tolist()
-            class_name = result.names[predicted_class.item()]
+        result = results[0]
 
-            confidence = round(box.conf[0].item(), 2)
+        if len(result.boxes) > 0:
+            box = result.boxes[0]
 
-            dict = {
-                "Object type": class_name,
-                "Coordinates": cordenadas_xywh,
-                "Probability": confidence,
-            }
+            for box in result.boxes:
+                predicted_class = box.cls[0]
 
-            bound_boxes.append(dict)
+                if predicted_class.item() != 0.0:
+                    continue
+
+                cordenadas_xywh = box.xyxy[0].tolist()
+                class_name = result.names[predicted_class.item()]
+
+                confidence = round(box.conf[0].item(), 2)
+
+                dict = {
+                    "Object type": class_name,
+                    "Coordinates": cordenadas_xywh,
+                    "Probability": confidence,
+                }
+
+                bound_boxes.append(dict)
+    except:
+        pass
 
     return bound_boxes
 
@@ -152,8 +156,8 @@ def crop_image(original_image_array: np.array, biggest_bound_box: dict) -> np.ar
     coordinates = biggest_bound_box[0]["Coordinates"]
 
     # Annotate bounding boxes on the OpenCV image
-    height_face = (coordinates[3]-coordinates[1])
-    lenght_face = (coordinates[2]-coordinates[0])
+    height_face = coordinates[3] - coordinates[1]
+    lenght_face = coordinates[2] - coordinates[0]
 
     x1 = int(max(0, coordinates[0] - lenght_face * 0.75))
     x2 = int(min(opencv_image.shape[1], coordinates[2] + lenght_face * 0.75))
@@ -161,14 +165,13 @@ def crop_image(original_image_array: np.array, biggest_bound_box: dict) -> np.ar
     y1 = int(max(0, coordinates[1] - height_face * 0.50))
     y2 = int(min(opencv_image.shape[0], coordinates[3] + height_face * 1.35))
 
-    face = opencv_image[ y1: y2, x1: x2]
+    face = opencv_image[y1:y2, x1:x2]
     # face = opencv_image[int(coordinates[1]):int(coordinates[3]),
     #                     int(coordinates[0]):int(coordinates[2])]
 
     face_colored = cv2.cvtColor(face, cv2.COLOR_BGR2RGB)
 
     return face_colored
-
 
 
 def crop_image_faces(original_image_array: np.array, bound_box: dict) -> np.array:
@@ -247,11 +250,11 @@ async def mi_funcion_principal():
     return model
 
 
-if __name__ == "__main__":
-    # import asyncio
-    image_file_path = "notebooks/trial_images/campo.jpg"
-    model = asyncio.run(mi_funcion_principal())
-    image = Image.open(image_file_path)
-    array_image = np.array(image)
+# if __name__ == "__main__":
+# # import asyncio
+# image_file_path = "notebooks/trial_images/campo.jpg"
+# model = asyncio.run(mi_funcion_principal())
+# image = Image.open(image_file_path)
+# array_image = np.array(image)
 
-    full_process(image, model, "prueba_now")
+# full_process(image, model, "prueba_now")
