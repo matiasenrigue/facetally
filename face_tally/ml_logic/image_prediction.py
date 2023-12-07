@@ -1,9 +1,12 @@
-from ultralytics import YOLO
+# from ultralytics import YOLO
 from keras_cv import bounding_box
 import numpy as np
 import datetime
 from PIL import Image
 import cv2
+
+from face_tally.params import *
+from face_tally.ml_logic.model import get_model
 
 
 """
@@ -35,28 +38,29 @@ def predict_bounding_boxes(image, model, model_source="COMET") -> dict:
         results = bounding_box.to_ragged(results)
 
     result = results[0]
-    box = result.boxes[0]
 
     bound_boxes = []
+    if len(result.boxes) > 0:
+        box = result.boxes[0]
 
-    for box in result.boxes:
-        predicted_class = box.cls[0]
+        for box in result.boxes:
+            predicted_class = box.cls[0]
 
-        if predicted_class.item() != 0.0:
-            continue
+            if predicted_class.item() != 0.0:
+                continue
 
-        cordenadas_xywh = box.xyxy[0].tolist()
-        class_name = result.names[predicted_class.item()]
+            cordenadas_xywh = box.xyxy[0].tolist()
+            class_name = result.names[predicted_class.item()]
 
-        confidence = round(box.conf[0].item(), 2)
+            confidence = round(box.conf[0].item(), 2)
 
-        dict = {
-            "Object type": class_name,
-            "Coordinates": cordenadas_xywh,
-            "Probability": confidence,
-        }
+            dict = {
+                "Object type": class_name,
+                "Coordinates": cordenadas_xywh,
+                "Probability": confidence,
+            }
 
-        bound_boxes.append(dict)
+            bound_boxes.append(dict)
 
     return bound_boxes
 
@@ -167,8 +171,6 @@ def crop_image(original_image_array: np.array, biggest_bound_box: dict) -> np.ar
 
 
 
-
-
 def crop_image_faces(original_image_array: np.array, bound_box: dict) -> np.array:
     """
     Takes both:
@@ -240,10 +242,15 @@ def full_process(original_image, model, saving_name=None) -> None:
     Image.fromarray(created_image)
 
 
-if __name__ == "__main__":
-    model = YOLO("yolov8n.pt")
-    image_file_path = "trial_images/IMG_4194.HEIC"
+async def mi_funcion_principal():
+    model, _ = await get_model(MODEL_SOURCE)
+    return model
 
+
+if __name__ == "__main__":
+    import asyncio
+    image_file_path = "notebooks/trial_images/campo.jpg"
+    model = asyncio.run(mi_funcion_principal())
     image = Image.open(image_file_path)
     array_image = np.array(image)
 
