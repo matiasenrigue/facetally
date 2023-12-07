@@ -11,17 +11,6 @@ This script has functions to be able to predict where object are in a picture:
 """
 
 
-class NumberFaces:
-    def __init__(self, initial_value=0):
-        self.value = initial_value
-
-    def change_value(self, new_value):
-        self.value = new_value
-
-    def get_value(self):
-        return self.value
-
-
 def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
     """
     Takes both:
