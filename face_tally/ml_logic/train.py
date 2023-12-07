@@ -57,9 +57,8 @@ def splitting_data(data: tf.data.Dataset):
 
     all_images_len = data.cardinality().numpy()
 
-    data_set_ratio = 0.2
-    train_idx = int(all_images_len * 0.1 * data_set_ratio)
-    validation_idx = int(all_images_len * 0.02 * data_set_ratio)
+    train_idx = int(all_images_len * 0.8)
+    validation_idx = int(all_images_len * 0.15)
 
     train_data = data.take(train_idx)
     val_data = data.skip(train_idx).take(validation_idx)
@@ -79,7 +78,12 @@ def splitting_data(data: tf.data.Dataset):
     val_ds = val_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
     val_ds = val_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
 
-    return train_ds, val_ds, test_data
+    test_ds = test_data.map(load_dataset, num_parallel_calls=tf.data.AUTOTUNE)
+    test_ds = test_ds.shuffle(BATCH_SIZE * 4)
+    test_ds = test_ds.ragged_batch(BATCH_SIZE, drop_remainder=True)
+    test_ds = test_ds.map(resizing, num_parallel_calls=tf.data.AUTOTUNE)
+
+    return train_ds, val_ds, test_ds
 
 
 async def fit_model(train_ds, val_ds):
