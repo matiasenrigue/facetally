@@ -32,22 +32,26 @@ class VideoProcessor:
 
         self.count = len(res)
 
-        return av.VideoFrame.from_ndarray(created_image, format="bgr24")
+        return av.VideoFrame.from_ndarray(created_image, format=format)
 
 
 def main():
     webrtc_ctx = webrtc_streamer(
         key="WYH",
-        mode=WebRtcMode.SENDRECV,
-        rtc_configuration=RTC_CONFIGURATION,
+        # mode=WebRtcMode.SENDRECV,
+        # rtc_configuration=RTC_CONFIGURATION,
         video_processor_factory=VideoProcessor,
         media_stream_constraints={"video": True, "audio": False},
-        async_processing=False,
+        # async_processing=False,
     )
-    if st.button("Count"):
-        count = webrtc_ctx.video_transformer.count
-        st.write(count)
-    # webrtc_ctx
+
+    with st.sidebar:
+        if st.button("Count"):
+            try:
+                count = webrtc_ctx.video_transformer.count
+                st.write(f'<span style="font-size: 36px;">{count}</span>')
+            except:
+                st.warning("Please start the video")
 
 
 if __name__ == "__main__":
