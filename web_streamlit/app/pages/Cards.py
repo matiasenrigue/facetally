@@ -20,6 +20,7 @@ st.title("Energy! 📸")
 img_file_buffer = st.camera_input("Test Energy on your best pics")
 
 url = "https://face-tally-r5t56frjwa-no.a.run.app/card"
+# url = "http://127.0.0.1:8002/card"
 
 if img_file_buffer is not None:
     col1, col2 = st.columns(2)
