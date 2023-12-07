@@ -57,7 +57,7 @@ async def download_best_model_from_GCP(
 
     # Select the best model (higher MaP)
     best_blob = all_files[-1]
-    print("Using best model for tarining: ", best_blob)
+    print("✅ Loaded weights from GCP: ", best_blob)
 
     # Extract best Map
     MaP = float(best_blob.split("_")[1])
