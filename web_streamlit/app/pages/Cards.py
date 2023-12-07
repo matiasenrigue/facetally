@@ -34,7 +34,6 @@ if img_file_buffer is not None:
         with st.spinner("Wait for it..."):
             ### Get bytes from the file buffer
             img_bytes = img_file_buffer.getvalue()
-            # breakpoint()
 
             ### Make request to  API (stream=True to stream response as bytes)
             res = requests.post(url, files={"img": img_bytes})
@@ -42,7 +41,7 @@ if img_file_buffer is not None:
             if res.status_code == 200:
                 ### Display the image returned by the API
                 # bites = BytesIO(base64.b64decode(res.content))
-                breakpoint()
+
                 aux_im = Image.open(BytesIO(res.content))
                 st.image(aux_im)
 
