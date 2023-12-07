@@ -3,7 +3,7 @@ import requests
 import streamlit as st
 from image_prediction import create_image
 import cv2
-from streamlit_webrtc import webrtc_streamer, RTCConfiguration
+from streamlit_webrtc import webrtc_streamer, RTCConfiguration, WebRtcMode
 
 RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
