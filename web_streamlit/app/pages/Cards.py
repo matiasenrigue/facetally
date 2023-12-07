@@ -4,6 +4,9 @@ from PIL import Image
 from image_prediction import create_image
 from io import BytesIO
 import base64
+import matplotlib.pyplot as plt
+import numpy as np
+import cv2
 
 # Set page tab display
 st.set_page_config(
@@ -40,13 +43,18 @@ if img_file_buffer is not None:
             res = requests.post(url, files={"img": img_bytes})
 
             if res.status_code == 200:
-                ### Display the image returned by the API
-                # bites = BytesIO(base64.b64decode(res.content))
+                # Bytes of the image
+                image_bytes = res.content
 
-                aux_im = Image.open(BytesIO(res.content))
-                st.image(aux_im)
+                # Convert the bytes to a BytesIO object
+                bytes_io = BytesIO(image_bytes)
 
-                st.image(res.content, caption="Image returned from API ☝️")
+                # Attempt to open the image using PIL
+                image = Image.open(bytes_io)
+
+                # Display the image using Streamlit
+                st.image(image, caption="Reconstructed Image")
+
             else:
                 st.markdown("**Oops**, something went wrong 😓 Please try again.")
                 print(res.status_code, res.content)
