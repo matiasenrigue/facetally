@@ -74,8 +74,8 @@ def unzip_file(zip_path: str, destination_folder: str) -> None:
             file_path = os.path.join(destination_folder, file_info.filename)
 
             # Check if the file already exists, and if so, overwrite it
-            if os.path.exists(file_path):
-                os.remove(file_path)
+            # if os.path.exists(file_path):
+                # os.rmdir(file_path)
 
             zip_ref.extract(file_info, destination_folder)
 
