@@ -3,10 +3,6 @@ import requests
 from PIL import Image
 from image_prediction import create_image
 from io import BytesIO
-import base64
-import matplotlib.pyplot as plt
-import numpy as np
-import cv2
 
 # Set page tab display
 st.set_page_config(
