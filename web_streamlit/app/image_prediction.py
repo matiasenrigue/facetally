@@ -11,6 +11,17 @@ This script has functions to be able to predict where object are in a picture:
 """
 
 
+class NumberFaces:
+    def __init__(self, initial_value=0):
+        self.value = initial_value
+
+    def change_value(self, new_value):
+        self.value = new_value
+
+    def get_value(self):
+        return self.value
+
+
 def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
     """
     Takes both:
@@ -29,43 +40,58 @@ def create_image(original_image_array: np.array, bound_boxes: dict) -> np.array:
         object_type = box_info["Object type"]
         probability = box_info["Probability"]
 
-        coordinates = box_info["Coordinates"]
-        color = (90, 255, 127)  # Color for the bounding box
-        thickness = 2
-
         # Convert float coordinates to integers
         coordinates = [int(coord) for coord in coordinates]
 
-        # Draw rectangle on the image
+        # Draw rectangle on the image around the face
         cv2.rectangle(
             opencv_image,
-            (coordinates[0], coordinates[1]),
-            (coordinates[2], coordinates[3]),
-            color,
-            thickness,
+            pt1=(coordinates[0], coordinates[1]),
+            pt2=(coordinates[2], coordinates[3]),
+            color=(92, 201, 116),
+            thickness=2,
         )
 
-        # Annotate with object type and probability
-        label = f"{object_type}"
-
+        # Rectangle holding the face text
         cv2.rectangle(
             opencv_image,
-            (coordinates[0], coordinates[1] - 5),
-            (coordinates[0] + 80, coordinates[1] - 25),
-            (76, 166, 96),
+            (coordinates[0], coordinates[1] - 5),  # X1, Y1
+            (coordinates[0] + 65, coordinates[1] - 30),  # X2, Y2
+            (76, 166, 96),  # Color RGB
             -1,  # thickness = -1 to fill the entire thing
         )
 
+        # Rectangle holding the score
+        cv2.rectangle(
+            opencv_image,
+            (coordinates[0], coordinates[1] - 35),  # X1, Y1
+            (coordinates[0] + 65, coordinates[1] - 60),  # X2, Y2
+            (92, 201, 116),  # Color RGB
+            -1,  # thickness = -1 to fill the entire thing
+        )
+
+        # Annotate with object type and probability
         cv2.putText(
             opencv_image,
-            label,
-            (coordinates[0], coordinates[1] - 10),
+            "face",
+            (coordinates[0] + 5, coordinates[1] - 10),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.75,
             (255, 255, 255),
             2,
         )
         # cv2.FONT_HERSHEY_SIMPLEX, size, color, width
+
+        # Annotate with object type and probability
+        cv2.putText(
+            opencv_image,
+            str(probability),
+            (coordinates[0] + 5, coordinates[1] - 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.75,
+            (255, 255, 255),
+            2,
+        )
 
     # Convert the annotated image back to RGB format
     annotated_image = cv2.cvtColor(opencv_image, cv2.COLOR_BGR2RGB)
