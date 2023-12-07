@@ -38,11 +38,11 @@ class VideoProcessor:
 def main():
     webrtc_ctx = webrtc_streamer(
         key="WYH",
-        # mode=WebRtcMode.SENDRECV,
+        mode=WebRtcMode.SENDRECV,
         rtc_configuration=RTC_CONFIGURATION,
         video_processor_factory=VideoProcessor,
         media_stream_constraints={"video": True, "audio": False},
-        # async_processing=False,
+        async_processing=False,
     )
 
     with st.sidebar:
