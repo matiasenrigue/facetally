@@ -57,9 +57,8 @@ def splitting_data(data: tf.data.Dataset):
 
     all_images_len = data.cardinality().numpy()
 
-    data_set_ratio = 0.2
-    train_idx = int(all_images_len * 0.1 * data_set_ratio)
-    validation_idx = int(all_images_len * 0.02 * data_set_ratio)
+    train_idx = int(all_images_len * 0.8)
+    validation_idx = int(all_images_len * 0.15)
 
     train_data = data.take(train_idx)
     val_data = data.skip(train_idx).take(validation_idx)
