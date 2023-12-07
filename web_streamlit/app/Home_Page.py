@@ -24,14 +24,8 @@ st.write(
     ***Step Up Your Game!***
 
     🔢 Instantly tally up the good vibes in your pics!
-    🤖 Experience the magic of precise face recognition, even in the craziest crowds.
+    🤖 Experience the magic of precise face recognition.
     🕰️ Enjoy real-time face counting with efficiency and precision, providing valuable insights.
-
-    Unlock Possibilities:
-
-    🎉 Seamlessly manage crowds at events and in public spaces, optimizing operational efficiency.
-    👨‍💻 Say goodbye to the "Are you here" Kit? prompt every morning: FaceTally can automatically detect your lovely face.
-    🎉 Perfect for parties, selfies, and capturing those unforgettable moments.
 
     Get ready to tally, share, and spread the joy! 🎊 #FaceTallyMagic
     """

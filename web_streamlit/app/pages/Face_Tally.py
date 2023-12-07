@@ -14,11 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Large, stylized title
-st.title("Let's go live! 📸")
-
-# img_file_buffer = st.file_uploader("Test Face Tally on your best pics")
-img_file_buffer = st.camera_input("Test FaceTally on your best pics")
+img_file_buffer = st.camera_input("")
 
 if img_file_buffer is not None:
     col1, col2 = st.columns(2)
@@ -32,18 +28,15 @@ if img_file_buffer is not None:
         files={"img": bytes_data},
     ).json()["boundsboxes"]
 
-    # Things done in the API:
-    # - model = YOLO("yolov8n.pt")
-    # - image = Image.open(img_file_buffer)
-    # - boundsboxes = getting_bounding_boxes(image, model)
-
     array_original_image = np.array(Image.open(img_file_buffer))
 
     created_image = create_image(
         array_original_image, res
     )  # Assuming create_image is defined somewhere
+    count = len(res)
 
     with col1:
         # Display the image user uploaded
-        st.markdown("Here are the faces in the image you uploaded👇")
-        st.image(Image.fromarray(created_image), caption="You can now save your image")
+        st.markdown("Results from the face classifier👇")
+        st.write("Tally: **" + str(count) + "** " + ("face" if count == 1 else "faces"))
+        st.image(Image.fromarray(created_image))
