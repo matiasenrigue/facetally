@@ -16,12 +16,12 @@ async def evaluate_model(test_ds, source):
 
     if source == "GCP":
         # Initialize COCO metrics
-        coco_metrics = BoxCOCOMetrics(bounding_box_format=BOX_FORMAT, evaluate_freq=1)
+        coco_metrics = BoxCOCOMetrics(bounding_box_format=BOX_FORMAT, evaluate_freq=1e9)
 
         # Evaluate each image in the test data
         for batch in test_ds:
-            images = batch[0]
-            bounding_boxes = batch[1]
+            images = batch["images"]
+            bounding_boxes = batch["bounding_boxes"]
 
             classes = bounding_boxes["classes"]
             boxes = bounding_boxes["boxes"]
