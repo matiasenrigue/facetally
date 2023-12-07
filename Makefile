@@ -27,3 +27,6 @@ test_training:
 
 train_model:
 	@python face_tally/interface/main.py
+
+evaluate_model:
+	@python face_tally/ml_logic/evaluate.py
