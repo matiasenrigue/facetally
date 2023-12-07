@@ -21,7 +21,7 @@ if img_file_buffer is not None:
 
     # To read image file buffer with OpenCV:
     bytes_data = img_file_buffer.getvalue()
-    cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+    # cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
 
     res = requests.post(
         url="https://face-tally-r5t56frjwa-no.a.run.app/upload_image",
