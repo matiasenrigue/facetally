@@ -20,7 +20,9 @@ async def evaluate_model(test_ds, source):
 
         # Evaluate each image in the test data
         for batch in test_ds:
-            images, bounding_boxes = batch
+            images = batch[0]
+            bounding_boxes = batch[1]
+
             classes = bounding_boxes["classes"]
             boxes = bounding_boxes["boxes"]
 

@@ -61,7 +61,7 @@ class EvaluateCOCOMetricsCallback(keras.callbacks.Callback):
 
         current_map = metrics["MaP"]
 
-        if current_map >= self.best_map:
+        if current_map.numpy() >= self.best_map.numpy() + 0.02:
             self.best_map = current_map
             model_path = os.path.join(LOCAL_DATA_PATH, "models")
             os.makedirs(model_path, exist_ok=True)
