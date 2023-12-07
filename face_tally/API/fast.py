@@ -1,7 +1,7 @@
 from face_tally.ml_logic.image_prediction import predict_bounding_boxes
 from face_tally.ml_logic.model import get_model
 from face_tally.params import *
-from face_tally.ml_logic.cards import  image_process
+from face_tally.ml_logic.cards import image_process
 from face_tally.ml_logic.data import update_template_images_from_GCP
 
 import numpy as np
@@ -55,7 +55,6 @@ async def receive_image(img: UploadFile = File(...)):
     return {"boundsboxes": boundsboxes}
 
 
-
 @app.post("/card")
 async def card_image(img: UploadFile = File(...)):
     # Receive the image from Streamlit
@@ -69,4 +68,9 @@ async def card_image(img: UploadFile = File(...)):
 
     text_img = image_process(model, character_array)
 
-    return Response(content=text_img.tobytes(), media_type="image/png")
+    # Convert the processed image to bytes
+    img_byte_arr = BytesIO()
+    text_img.save(img_byte_arr, format="PNG")
+    img_byte_arr = img_byte_arr.getvalue()
+
+    return Response(content=img_byte_arr, media_type="image/png")
