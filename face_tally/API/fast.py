@@ -69,4 +69,4 @@ async def card_image(img: UploadFile = File(...)):
 
     text_img = image_process(model, character_array)
 
-    return Response(content=text_img.tobytes(), media_type="image/jpg")
+    return Response(content=text_img.tobytes(), media_type="image/png")
