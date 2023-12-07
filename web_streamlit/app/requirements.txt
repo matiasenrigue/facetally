@@ -8,8 +8,8 @@ streamlit
 requests
 python-dotenv
 
-opencv-python-headless==4.6.0.66
+opencv-python-headless==4.8.0.76
 datetime
 
 # Live video
-streamlit-webrtc
+streamlit_webrtc==0.47.0
