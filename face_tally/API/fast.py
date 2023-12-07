@@ -1,10 +1,15 @@
 from face_tally.ml_logic.image_prediction import predict_bounding_boxes
 from face_tally.ml_logic.model import get_model
 from face_tally.params import *
+from face_tally.ml_logic.cards import  image_process
+from face_tally.ml_logic.data import update_template_images_from_GCP
 
+import numpy as np
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File
 from io import BytesIO
+from starlette.responses import Response
+
 
 """
 This script receives an API call:
@@ -25,6 +30,7 @@ async def load_model():
 @app.on_event("startup")
 async def startup_event():
     app.state.model = await load_model()
+    await update_template_images_from_GCP()
 
 
 @app.get("/ok")
@@ -47,3 +53,20 @@ async def receive_image(img: UploadFile = File(...)):
 
     # Convert boundsboxes to a JSON-serializable format
     return {"boundsboxes": boundsboxes}
+
+
+
+@app.post("/card")
+async def card_image(img: UploadFile = File(...)):
+    # Receive the image from Streamlit
+    contents = await img.read()
+
+    # Open the image from Bytes format
+    image = Image.open(BytesIO(contents))
+    character_array = np.array(image)
+
+    model = app.state.model
+
+    text_img = image_process(model, character_array)
+
+    return Response(content=text_img.tobytes(), media_type="image/jpg")

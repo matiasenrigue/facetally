@@ -110,6 +110,29 @@ async def update_local_raw_data_from_GCP() -> None:
 
     return None
 
+async def update_template_images_from_GCP() -> None:
+    """
+    Updates the template images with the data in Google Cloud Storage
+    """
+
+    print("Updating local images from Google Cloud Storage...")
+
+    # Bucket paths
+    image_data_zip_name = "images.zip"
+
+    # Download the data
+    changes= await download_data_from_GCP(BUCKET_NAME, image_data_zip_name, LOCAL_DATA_PATH)
+
+    # Unzip the data
+    zip_path = os.path.join(LOCAL_DATA_PATH, image_data_zip_name)
+    unzip_file(zip_path, LOCAL_DATA_PATH)
+
+    if not (changes):
+        print("Process finished, local files were already up to date")
+    else:
+        print("Process finished, local raw data folder is up to date")
+
+    return None
 
 if __name__ == "__main__":
     asyncio.run(update_local_raw_data_from_GCP())
