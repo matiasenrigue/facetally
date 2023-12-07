@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
 from PIL import Image
-from image_prediction import create_image
 from io import BytesIO
 
 # Set page tab display
