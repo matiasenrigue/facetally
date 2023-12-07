@@ -248,7 +248,7 @@ async def mi_funcion_principal():
 
 
 if __name__ == "__main__":
-    import asyncio
+    # import asyncio
     image_file_path = "notebooks/trial_images/campo.jpg"
     model = asyncio.run(mi_funcion_principal())
     image = Image.open(image_file_path)
