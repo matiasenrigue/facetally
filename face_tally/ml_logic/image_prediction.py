@@ -250,11 +250,11 @@ async def mi_funcion_principal():
     return model
 
 
-if __name__ == "__main__":
-    # # import asyncio
-    # image_file_path = "notebooks/trial_images/campo.jpg"
-    # model = asyncio.run(mi_funcion_principal())
-    # image = Image.open(image_file_path)
-    # array_image = np.array(image)
+# if __name__ == "__main__":
+# # import asyncio
+# image_file_path = "notebooks/trial_images/campo.jpg"
+# model = asyncio.run(mi_funcion_principal())
+# image = Image.open(image_file_path)
+# array_image = np.array(image)
 
-    # full_process(image, model, "prueba_now")
+# full_process(image, model, "prueba_now")
