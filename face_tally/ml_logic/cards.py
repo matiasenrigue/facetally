@@ -12,28 +12,25 @@ import os
 
 
 def get_images():
-
-    images_path = os.path.join(LOCAL_DATA_PATH, 'images')
-
+    images_path = os.path.join(LOCAL_DATA_PATH, "images")
 
     backgrounds = {
-        "happy": Image.open(os.path.join(images_path, 'backround_happy.jpg')),
-        "angry": Image.open(os.path.join(images_path, 'backround_angry.jpg')),
-        "sad": Image.open(os.path.join(images_path, 'backround_sad.jpg')),
-        "neutral": Image.open(os.path.join(images_path, 'backround_neutral.jpg')),
-        "fear": Image.open(os.path.join(images_path, 'backround_fear.jpg')),
-        "disgust": Image.open(os.path.join(images_path, 'backround_disgust.jpg')),
-        "surprise": Image.open(os.path.join(images_path, 'backround_surprise.jpg'))
+        "happy": Image.open(os.path.join(images_path, "backround_happy.jpg")),
+        "angry": Image.open(os.path.join(images_path, "backround_angry.jpg")),
+        "sad": Image.open(os.path.join(images_path, "backround_sad.jpg")),
+        "neutral": Image.open(os.path.join(images_path, "backround_neutral.jpg")),
+        "fear": Image.open(os.path.join(images_path, "backround_fear.jpg")),
+        "disgust": Image.open(os.path.join(images_path, "backround_disgust.jpg")),
+        "surprise": Image.open(os.path.join(images_path, "backround_surprise.jpg")),
     }
 
     pics = {
-        "Man": Image.open(os.path.join(images_path, 'warrior.png')),
-        "Women": Image.open(os.path.join(images_path, 'princess.png')),
-        "heart": Image.open(os.path.join(images_path, 'heart.png'))
+        "Man": Image.open(os.path.join(images_path, "warrior.png")),
+        "Woman": Image.open(os.path.join(images_path, "princess.png")),
+        "heart": Image.open(os.path.join(images_path, "heart.png")),
     }
 
     return backgrounds, pics
-
 
 
 def get_biggest_bounding_box(bbox):
@@ -48,7 +45,9 @@ def get_biggest_bounding_box(bbox):
     biggest_bbox = []
     for face in bbox:
         coordinates = face["Coordinates"]
-        face_area = abs(coordinates[2] - coordinates[0]) * abs(coordinates[3] - coordinates[1])
+        face_area = abs(coordinates[2] - coordinates[0]) * abs(
+            coordinates[3] - coordinates[1]
+        )
         if face_area >= biggest_face_area:
             biggest_face = face
             biggest_face_area = face_area
@@ -59,9 +58,7 @@ def get_biggest_bounding_box(bbox):
     return biggest_bbox
 
 
-
 def draw_image(results, person_array):
-
     backgrounds, pics = get_images()
     person = Image.fromarray(person_array)
 
@@ -69,30 +66,33 @@ def draw_image(results, person_array):
     background = backgrounds[results[0]["dominant_emotion"]]
     energy = pics[results[0]["dominant_gender"]]
     heart = pics["heart"]
-    age = results[0]['age']
+    age = results[0]["age"]
 
+    # Create the image:
+    text_img = Image.new("RGBA", (600, 600), (0, 0, 0, 0))
 
-    #Create the image:
-    text_img = Image.new('RGBA', (600,600), (0, 0, 0, 0))
-
-    #Paste the background:
+    # Paste the background:
     background_resized = background.resize((600, 600))
-    text_img.paste(background_resized, (0,0))
+    text_img.paste(background_resized, (0, 0))
 
-    #Paste the heart conditional to the age of the person:
-    heart_resized = heart.resize((50,50))
-    text_img.paste(heart_resized, ((int(180 + (age / 100) * (450 - 180)), 470)), mask = heart_resized)
+    # Paste the heart conditional to the age of the person:
+    heart_resized = heart.resize((50, 50))
+    text_img.paste(
+        heart_resized, ((int(180 + (age / 100) * (450 - 180)), 470)), mask=heart_resized
+    )
 
-    #Writing the age of the person:
-    draw = ImageDraw.Draw(text_img) # Crear un objeto ImageDraw para dibujar en la imagen
-    font = ImageFont.load_default(55) # Especificar la fuente y el tamaño del texto
-    text_position = (30, 450) # Especificar la posición y el contenido del texto
+    # Writing the age of the person:
+    draw = ImageDraw.Draw(
+        text_img
+    )  # Crear un objeto ImageDraw para dibujar en la imagen
+    font = ImageFont.load_default(55)  # Especificar la fuente y el tamaño del texto
+    text_position = (30, 450)  # Especificar la posición y el contenido del texto
     text_content = f"{age}"
     draw.text(text_position, text_content, font=font, fill=(0, 0, 0, 0))
 
-    #Paste the energy (gender) of the person:
-    energy = energy.resize((120,120))
-    text_img.paste(energy, (30,70), mask=energy)
+    # Paste the energy (gender) of the person:
+    energy = energy.resize((120, 120))
+    text_img.paste(energy, (30, 70), mask=energy)
 
     # Taking care of the person
 
@@ -104,7 +104,7 @@ def draw_image(results, person_array):
 
     # Calculate the new dimensions while maintaining proportions
     original_width, original_height = person.size
-    new_width = x_max - x_min # Ensure the width doesn't exceed the available space
+    new_width = x_max - x_min  # Ensure the width doesn't exceed the available space
     new_height = int((new_width * original_height) / original_width)
 
     # Calculate the y-coordinate to ensure it stays within the specified range
@@ -123,7 +123,6 @@ async def load_model():
 
 
 def image_process(model, character_array):
-
     bbs = predict_bounding_boxes(character_array, model, "COMET")
     bb = get_biggest_bounding_box(bbs)
     face = crop_image(character_array, bb)
@@ -136,10 +135,9 @@ def image_process(model, character_array):
     return text_img
 
 
-
 if __name__ == "__main__":
     model = load_model()
-    character = Image.open('trial_images/football_try.jpeg')
+    character = Image.open("trial_images/football_try.jpeg")
     character_array = np.array(character)
 
     text_img = image_process(model, character_array)
